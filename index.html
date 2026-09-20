@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nephila · Crochê & Macramê</title>
+  <meta name="description" content="Nephila — peças artesanais em crochê e macramê por Milena. Bolsas, itens de decoração e acessórios feitos à mão, exclusivos e únicos.">
+
+  <!-- Fontes (com fallback para funcionar offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR FIXA (links/menu são montados pelo js/main.js a partir do js/data.js) -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner container">
+      <a class="navbar__brand" href="#inicio" aria-label="Nephila – voltar ao início">
+        <img class="navbar__logo" src="img/logo-fundo-branco-nome.jpeg" alt="Logo Nephila">
+      </a>
+      <nav class="navbar__menu" id="navMenu" aria-label="Menu principal"><!-- injetado por JS --></nav>
+      <button class="navbar__toggle" id="navToggle" aria-expanded="false" aria-label="Abrir menu" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HERO / INÍCIO ================= -->
+    <section class="hero" id="inicio">
+      <div class="hero__grid container">
+        <div class="hero__banner">
+          <img class="hero__banner-img" src="img/logo-fundo-branco-nome.jpeg" alt="Logotipo Nephila">
+        </div>
+        <div class="hero__body">
+          <div class="hero__text">
+            <p class="eyebrow">crochê · macramê · feito à mão</p>
+            <h1 class="hero__title">arte em cada linha,<br>nó por nó</h1>
+            <p class="hero__copy">
+              Peças exclusivas tecidas por <strong id="heroArtisan">Milena</strong>, da primeira
+              laçada ao último detalhe. Cada Nephila é única — como quem a usa.
+            </p>
+            <div class="hero__ctas">
+              <a class="btn btn--gold" href="#produtos">Ver bolsas</a>
+              <a class="btn btn--ghost" href="#contato">Pedir uma peça</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="hero__scroll" href="#sobre" aria-label="Rolar para a seção Sobre">
+        <span class="hero__scroll-dot"></span>
+      </a>
+    </section>
+
+    <!-- ================= SOBRE / A ARTESÃ ================= -->
+    <section class="sobre" id="sobre">
+      <div class="container">
+        <div class="sobre__grid">
+          <div class="sobre__media">
+            <div class="sobre__frame" id="sobreFrame">
+              <img src="img/milena.jpeg" alt="Milena, artesã da Nephila" loading="lazy">
+            </div>
+          </div>
+          <div class="sobre__text">
+            <p class="eyebrow">a artesã</p>
+            <h2 class="section-title">Por trás de cada peça,<br>as mãos da <em>Milena</em>.</h2>
+            <div id="sobreBio"><!-- injetado por JS --></div>
+            <div class="sobre__tags">
+              <span class="tag">Peça única</span>
+              <span class="tag">Feita à mão</span>
+              <span class="tag">Fios selecionados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRODUTOS ================= -->
+    <section class="produtos" id="produtos">
+      <div class="container">
+        <header class="produtos__head">
+          <p class="eyebrow">ateliê</p>
+          <h2 class="section-title">Peças que carregam história</h2>
+          <p class="produtos__intro">
+            Bolsas, decoração e acessórios tecidos à mão. Toque numa peça para
+            conhecê-la — disponibilidade e medidas são combinadas direto com a artesã.
+          </p>
+        </header>
+        <div class="filtros" id="filtros" role="tablist" aria-label="Filtrar por categoria"><!-- injetado por JS --></div>
+        <div id="categorias"><!-- seções de produtos injetadas por JS --></div>
+      </div>
+    </section>
+
+    <!-- ================= EXCLUSIVIDADE ================= -->
+    <section class="exclusiva" id="exclusiva">
+      <div class="container">
+        <p class="eyebrow eyebrow--gold">trabalho artesanal</p>
+        <h2 class="section-title section-title--light">Nada de prateleira.<br>Nada de duas iguais.</h2>
+        <p class="exclusiva__lead">
+          Cada Nephila é produzida para ser <strong>única</strong>: o textura, o caimento
+          e o acabamento variam a cada peça — é a assinatura do feito à mão.
+        </p>
+        <div class="exclusiva__grid">
+          <div class="card-excl">
+            <span class="card-excl__num">01</span>
+            <h3>Peça única</h3>
+            <p>Nenhuma bolsa sai do tear igual à anterior. Você leva algo só seu.</p>
+          </div>
+          <div class="card-excl">
+            <span class="card-excl__num">02</span>
+            <h3>Sob encomenda</h3>
+            <p>Produção sob demanda: a peça é feita pensando no seu gosto.</p>
+          </div>
+          <div class="card-excl">
+            <span class="card-excl__num">03</span>
+            <h3>Atendimento direto</h3>
+            <p>Disponibilidade, medidas e prazos são combinados diretamente com a artesã.</p>
+          </div>
+        </div>
+        <div class="exclusiva__cta">
+          <p>Quer uma peça exclusiva ou saber a disponibilidade de uma bolsa?<br>
+             <strong>Fale direto com Milena:</strong></p>
+          <a class="btn btn--gold" id="exclusivaWhatsapp">WhatsApp</a>
+          <a class="btn btn--outline" id="exclusivaEmail">E-mail</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTATO / PEDIDO ================= -->
+    <section class="contato" id="contato">
+      <div class="container">
+        <div class="contato__grid">
+          <div class="contato__text">
+            <p class="eyebrow">conversar com a artesã</p>
+            <h2 class="section-title">Encomende ou tire dúvidas</h2>
+            <p class="contato__intro">
+              Disponibilidade, valores e entrega são sempre combinados direto com a Milena.
+              É só chamar no canal que preferir — ela responde com carinho.
+            </p>
+            <div class="contato__canais">
+              <a class="canal" id="canalWhatsapp" href="#" target="_blank" rel="noopener">
+                <span class="canal__icone canal__icone--wa" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.2c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .3-3.4-.7-2.9-1.2-4.7-4.3-4.9-4.5-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5s.8 1.9.8 2c0 .1.1.2 0 .4-.3.6-.7 1-.3 1.6.9 1.4 1.9 2.3 3.4 2.8.4.1.6.1.8-.1.2-.2.9-1 1.1-1.4.2-.3.4-.3.7-.2l2 .9c.3.2.5.3.6.4 0 .1 0 .6-.2 1Z" fill="currentColor"/></svg></span>
+                <span><strong>WhatsApp</strong><br><span class="canal__valor" id="whatsappDisplay"></span></span>
+              </a>
+              <a class="canal" id="canalEmail" href="#">
+                <span class="canal__icone canal__icone--mail" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Zm2 0 8 5 8-5H4Zm0 2.4V18h16V8.4l-8 5-8-5Z" fill="currentColor"/></svg></span>
+                <span><strong>E-mail</strong><br><span class="canal__valor" id="emailDisplay"></span></span>
+              </a>
+            </div>
+          </div>
+          <form class="pedido" id="formPedido" novalidate>
+            <label class="pedido__label" for="formNome">Seu nome</label>
+            <input class="pedido__field" type="text" id="formNome" name="nome" placeholder="Como podemos te chamar?" required>
+
+            <label class="pedido__label" for="formMensagem">Mensagem</label>
+            <textarea class="pedido__field" id="formMensagem" name="mensagem" rows="4"
+              placeholder="Olá, Milena! Gostaria de saber a disponibilidade de…" required></textarea>
+
+            <button class="btn btn--dark pedido__submit" type="submit">Enviar pelo WhatsApp</button>
+            <p class="pedido__hint">O formulário abre uma conversa no WhatsApp com a mensagem pronta para enviar.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= RODAPÉ ================= -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <a class="footer__brand" href="#inicio">
+        <img src="img/logo-fundo-branco-nome.jpeg" alt="Logo Nephila">
+      </a>
+      <p class="footer__credit">© <span id="footYear"></span> Nephila · Crochê &amp; Macramê · Feito à mão pela Milena</p>
+    </div>
+  </footer>
+
+  <!-- BOTÃO FLUTUANTE DE WHATSAPP (conversão) -->
+  <a class="float-whatsapp" id="floatWhatsapp" href="#" target="_blank" rel="noopener" aria-label="Conversar com Milena no WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.2c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .3-3.4-.7-2.9-1.2-4.7-4.3-4.9-4.5-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5s.8 1.9.8 2c0 .1.1.2 0 .4-.3.6-.7 1-.3 1.6.9 1.4 1.9 2.3 3.4 2.8.4.1.6.1.8-.1.2-.2.9-1 1.1-1.4.2-.3.4-.3.7-.2l2 .9c.3.2.5.3.6.4 0 .1 0 .6-.2 1Z" fill="currentColor"/></svg>
+  </a>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

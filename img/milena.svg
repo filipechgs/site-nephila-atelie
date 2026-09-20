@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Retrato ilustrado de Milena, artesã da Nephila">
+  <rect width="400" height="400" rx="26" fill="#fdfaf6"/>
+  <circle cx="318" cy="84" r="132" fill="#e3c87f" opacity="0.35"/>
+  <circle cx="200" cy="196" r="156" fill="none" stroke="#cda550" stroke-width="2.5"/>
+  <path d="M88 400c14-104 66-158 112-158s98 54 112 158Z" fill="#0c3747"/>
+  <path d="M158 258c4-26 24-40 42-40s38 14 42 40" fill="#e9b183"/>
+  <path d="M138 196c0-70 30-112 62-112s62 42 62 112v14c0 66-28 104-62 104s-62-38-62-104Z" fill="#0a2c3a"/>
+  <path d="M138 196c0-52 20-90 48-104-18 12-30 44-30 88 0 66 28 104 62 104-34 2-54-26-54-68 0-10 2-18 6-26" fill="#12506a" opacity="0.85"/>
+  <path d="M200 168a52 52 0 0 0 52 52 54 54 0 0 1-52 52 54 54 0 0 1-52-52 52 52 0 0 0 52-52Z" fill="#e9b183" transform="translate(-8 22)"/>
+  <circle cx="176" cy="196" r="6.5" fill="#4a2f24"/>
+  <circle cx="224" cy="196" r="6.5" fill="#4a2f24"/>
+  <path d="M170 212c6 7 15 10 30 10s24-3 30-10" fill="none" stroke="#a4553c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M128 208a14 14 0 0 1 3-14 12 12 0 0 1 18 0" fill="none" stroke="#4a2f24" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <path d="M244 244a14 14 0 0 0 17 0" fill="none" stroke="#4a2f24" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="164" cy="222" r="7" fill="#e99f7d" opacity="0.45"/>
+  <circle cx="236" cy="222" r="7" fill="#e99f7d" opacity="0.45"/>
+  <circle cx="170" cy="266" r="6" fill="#cda550"/>
+  <circle cx="230" cy="266" r="6" fill="#cda550"/>
+  <circle cx="200" cy="356" r="34" fill="#cda550"/>
+  <path d="M182 352c14 10 30 10 40 0" fill="none" stroke="#8a6a2c" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <path d="M230 366c30-4 46-16 48-38" fill="none" stroke="#b28e3f" stroke-width="4" stroke-linecap="round"/>
+  <text x="200" y="330" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="17" fill="#0c3747">tecida à mão</text>
+</svg>
