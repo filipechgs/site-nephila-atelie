@@ -1,0 +1,10 @@
+# Imagens originais do designer (fontes vetoriais)
+img/*.ai
+img/*.pdf
+
+# Arquivos compactados (fotos brutas do WhatsApp)
+img/*.zip
+
+# Sistema
+Thumbs.db
+.DS_Store
