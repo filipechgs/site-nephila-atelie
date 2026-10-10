@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Painel local — não faz parte do site público
+Disallow: /admin/
+Disallow: /server/
+Disallow: /scripts/
+Disallow: /node_modules/
+
+Sitemap: https://nephilaatelie.com.br/sitemap.xml
