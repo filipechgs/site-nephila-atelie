@@ -291,14 +291,31 @@ ul { list-style: none; margin: 0; padding: 0; }
 .card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px -18px rgba(12, 55, 71, 0.35); }
 .card__body { padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .card__name { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; color: var(--teal-800); }
+.card__price { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--teal-700); }
 .card__desc { font-size: 0.95rem; color: var(--ink-soft); }
+.card__materials { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; }
+.card__materials li { font-size: 0.82rem; color: var(--teal-700); }
+.card__materials li::before {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  transform: translateY(-1px);
+}
 .card__cta { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.card__cta--end { justify-content: flex-end; }
 .card__tech { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
 .card__ask { font-size: 0.9rem; font-weight: 500; color: var(--teal-800); border-bottom: 1.5px solid var(--gold); padding-bottom: 2px; }
 .card__ask:hover { color: var(--gold); }
 
-/* --- Carrossel (até 3 fotos) --- */
+/* --- Carrossel --- */
 .carousel { position: relative; background: var(--cream-dark); }
+.carousel--empty {
+  display: grid; place-items: center; min-height: 220px;
+  color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.78rem;
+}
 .carousel__viewport { overflow: hidden; }
 .carousel__track { display: flex; transition: transform 0.4s ease; }
 .carousel__slide { flex: 0 0 100%; min-width: 100%; aspect-ratio: 4 / 4.6; }
@@ -313,6 +330,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 .carousel__arrow:hover { background: var(--gold); color: var(--teal-900); }
 .carousel__arrow--prev { left: 10px; }
 .carousel__arrow--next { right: 10px; }
+.carousel__arrow[hidden] { display: none !important; }
 .carousel__dots { display: flex; justify-content: center; gap: 7px; padding: 10px 0 8px; }
 .carousel__dot {
   width: 7px; height: 7px; border-radius: 50%; border: 0; padding: 0;

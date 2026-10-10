@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Nephila — Organizar peças</title>
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <div>
+        <p class="brand">Nephila</p>
+        <h1>Organizar peças</h1>
+        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. Quando terminar, clique em <strong>Gerar site</strong>.</p>
+      </div>
+      <div class="top__actions">
+        <a class="btn btn--ghost" href="/" target="_blank" rel="noopener">Ver o site</a>
+        <button class="btn btn--gold" id="btnBuild" type="button">Gerar site</button>
+      </div>
+    </header>
+
+    <p id="status" class="status" role="status"></p>
+
+    <div class="layout">
+      <aside class="panel">
+        <div class="panel__head">
+          <h2>Categorias</h2>
+          <button class="btn btn--small btn--dark" id="btnNewCategory" type="button">Nova</button>
+        </div>
+        <p class="hint">Cada categoria vira um grupo no site, como Bolsas ou Decoração.</p>
+        <ul id="catList" class="cat-list"></ul>
+      </aside>
+      <section class="panel workspace" id="workspace" aria-live="polite"></section>
+    </div>
+
+    <footer class="foot">
+      <p>Este painel só funciona neste computador. Gerar site atualiza a página local. Para o endereço nephilaatelie.com.br mudar, envie as alterações ao GitHub depois.</p>
+    </footer>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>

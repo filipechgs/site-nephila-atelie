@@ -1,0 +1,18 @@
+{
+  "brand": "Nephila",
+  "artisan": {
+    "name": "Milena",
+    "firstName": "Milena",
+    "role": "Artesã · Crochê & Macramê",
+    "bio": [
+      "Cada peça Nephila nasce nas mãos de Milena, linha por linha, nó por nó.",
+      "O nome vem da aranha Nephila, que tece fios de seda dourada e resistente. É assim que Milena tece: tramas delicadas, feitas para durar."
+    ]
+  },
+  "contact": {
+    "whatsappNumber": "5571993044037",
+    "whatsappDisplay": "(71) 99304-4037",
+    "whatsappMessage": "Olá, Milena! Vi o site Nephila e quero saber mais sobre suas peças.",
+    "email": "milena@nephila.com.br"
+  }
+}

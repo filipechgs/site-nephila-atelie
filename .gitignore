@@ -8,3 +8,4 @@ img/*.zip
 # Sistema
 Thumbs.db
 .DS_Store
+node_modules/

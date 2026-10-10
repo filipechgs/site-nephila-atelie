@@ -8,23 +8,31 @@ Site portfólio da Nephila (ateliê de crochê e macramê). Publicado via GitHub
 
 ## Arquitetura
 
-O site é data-driven. Todo conteúdo é definido em `js/data.js` e renderizado por `js/main.js`. O HTML e CSS são estáticos — o JS monta dinamicamente navbar, produtos, carrosséis e links de contato.
+A página pública continua data-driven. As peças não são mais editadas em `js/data.js`: a pasta `produtos/` é a fonte da verdade, e `scripts/build-data.js` gera o `data.js`. Marca, bio e contato vêm de `site.json`.
+
+Há um painel local (Express, sem login, só em `127.0.0.1`) para criar e editar categorias, peças e fotos. O botão **Gerar site** roda o mesmo build.
+
+Detalhes e o formato dos Markdown: `docs/arquitetura-produtos.md`.
 
 ### Fluxo de dados
 
 ```
-js/data.js (conteúdo) → js/main.js (renderização) → index.html (estrutura)
+produtos/ + site.json → scripts/build-data.js → js/data.js → js/main.js → index.html
 ```
 
 ## Arquivos e responsabilidades
 
 | Arquivo | O que faz | Pode editar? |
 |---------|-----------|--------------|
-| `js/data.js` | Config central: dados da artesã, contato, categorias, produtos | SIM — este é o arquivo principal |
-| `js/main.js` | Renderiza navbar, filtros, carrosséis, formulário WhatsApp | Cuidado — lógica |
+| `produtos/` | Categorias, Markdown e fotos das peças | SIM — fonte da verdade |
+| `site.json` | Marca, bio e contato | SIM |
+| `js/data.js` | Gerado pelo build. O site lê daqui | NÃO — rode `npm run build` |
+| `js/main.js` | Renderiza navbar, filtros, carrosséis, contato | Cuidado — lógica |
 | `css/style.css` | Estilos mobile-first, paleta teal/dourado/creme | Cuidado — visual |
 | `index.html` | Seções semânticas da página | Cuidado — estrutura |
-| `img/produtos/` | Fotos dos produtos (1 a 3 por produto) | SIM — adicionar/remover |
+| `admin/public/` | Interface do painel | Cuidado |
+| `server/index.js` | API local do painel | Cuidado |
+| `scripts/catalog.js` | Leitura, gravação e build das peças | Cuidado |
 | `img/milena.jpeg` | Foto da artesã | SIM — substituir |
 | `fonts/Alice-Regular.ttf` | Fonte do título da marca | Não mexer |
 
@@ -36,52 +44,40 @@ Extraída das logos originais:
 - **Dourado:** `#CDA550` (CSS: `--gold`)
 - **Creme (fundo):** `#F8F1E9` (CSS: `--cream`)
 
-## Estrutura de `js/data.js`
-
-```js
-const SITE = {
-  brand: "Nephila",           // Nome da marca
-  artisan: {                  // Dados da artesã
-    name: "Milena",
-    firstName: "Milena",
-    role: "Artesã · Crochê & Macramê",
-    bio: ["Parágrafo 1...", "Parágrafo 2..."]
-  },
-  contact: {                  // Dados de contato
-    whatsappNumber: "5571993044037",    // Só números, formato intl
-    whatsappDisplay: "(71) 99304-4037", // Exibição amigável
-    whatsappMessage: "Olá, Milena! ...",// Mensagem pré-preenchida
-    email: "milena@nephila.com.br"
-  },
-  categories: [               // Categorias de produto
-    { id: "bolsas", label: "Bolsas", blurb: "..." },
-    { id: "decoracao", label: "Decoração", blurb: "..." },
-    { id: "acessorios", label: "Acessórios", blurb: "..." }
-  ],
-  products: [                 // Produtos do portfólio
-    {
-      id: "rita",             // Slug único
-      name: "Rita",           // Nome exibido
-      category: "bolsas",     // Deve existir em categories
-      desc: "Descrição...",   // Opcional
-      photos: [               // 1 a 3 fotos
-        "img/produtos/rita.jpeg"
-      ]
-    }
-  ]
-};
-```
-
 ## Como adicionar um produto
 
-1. Coloque a(s) foto(s) em `img/produtos/`
-2. Adicione o objeto em `SITE.products` em `js/data.js`
-3. O carrossel aparece automaticamente se houver mais de 1 foto
+Pelo painel (`npm start` → http://127.0.0.1:3847/admin) ou criando a pasta na convenção:
+
+```
+produtos/bolsas/rosa/rosa.md
+produtos/bolsas/rosa/rosa-0.jpeg
+```
+
+O `.md` tem, nesta ordem: título `# Nome`, parágrafo de descrição, lista de materiais e parágrafo do preço. Depois rode `npm run build`.
+
+O nome da pasta é kebab-case e único no site. Fotos: `{slug}-0.ext`, `{slug}-1.ext` (jpeg, jpg, png ou webp).
 
 ## Como adicionar uma categoria
 
-1. Adicione em `SITE.categories`
-2. Use o `id` nos produtos: `category: "novo-id"`
+Crie `produtos/nova-categoria/_categoria.md` com `# Nome` e um parágrafo de apresentação. O `id` é o nome da pasta. Rode `npm run build`.
+
+## Campos gerados em `js/data.js`
+
+Cada peça sai assim:
+
+```js
+{
+  id: "rita",
+  name: "Rita",
+  category: "bolsas",
+  desc: "Descrição",
+  materials: ["Fio de algodão"],
+  price: "R$ 180,00",
+  photos: ["produtos/bolsas/rita/rita-0.jpeg"]
+}
+```
+
+`brand`, `artisan` e `contact` são copiados de `site.json`.
 
 ## Seções da página (ordem no HTML)
 
@@ -100,13 +96,14 @@ const SITE = {
 
 ## Carrossel de fotos
 
-Cada produto pode ter até 3 fotos. O `main.js` cria automaticamente:
+Cada peça pode ter até 12 fotos. O `main.js` cria automaticamente:
+
 - Track deslizante
 - Setas prev/next
 - Indicadores (dots)
 - Miniaturas (thumbnails)
 
-Se `photos` tem 1 foto, controles são ocultos.
+Se `photos` tem 1 foto, controles são ocultos. O card também mostra preço e, quando existem, os materiais.
 
 ## Contato
 
@@ -118,23 +115,22 @@ Se `photos` tem 1 foto, controles são ocultos.
 ## Comandos úteis
 
 ```bash
-# Verificar sintaxe JS
+npm install
+npm start          # painel em http://127.0.0.1:3847/admin
+npm run build      # regenera js/data.js
+
 node --check js/data.js
 node --check js/main.js
-
-# Testar renderização (headless Edge)
-msedge.exe --headless=new --dump-dom file:///D:/site-nephila/index.html
-
-# Git
-git add -A && git commit -m "mensagem" && git push
 ```
 
 ## Regras para o agente
 
-1. **Sempre ler `js/data.js` antes de editar conteúdo**
-2. **Nunca alterar `js/main.js` sem necessidade**
-3. **Validar sintaxe JS após edições**: `node --check js/data.js`
-4. **Manter a estrutura de arrays/objetos intacta**
-5. **Não adicionar dependências externas** (projeto é vanilla)
-6. **Preservar a paleta de cores** (teal/dourado/creme)
-7. **Commit em português**
+1. **Peças e categorias:** editar `produtos/`, nunca o miolo de `js/data.js`
+2. **Marca, bio e contato:** editar `site.json` e rodar `npm run build`
+3. **Sempre gerar** `js/data.js` depois de mudar conteúdo (`npm run build`)
+4. **Validar sintaxe** com `node --check`
+5. **Não alterar** `js/main.js`, CSS ou HTML sem necessidade
+6. **Site público sem framework.** Express e Multer são só do painel local
+7. **Preservar a paleta** (teal/dourado/creme)
+8. **Commit em português**
+9. **Não rodar `npm run migrate` de novo** — a migração das fotos antigas já foi feita

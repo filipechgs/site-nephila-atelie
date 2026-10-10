@@ -12,117 +12,82 @@ O site funciona como portfólio e vitrine de produtos artesanais, com o objetivo
 
 ```
 site-nephila/
-├── index.html              # Página principal (seções semânticas)
-├── css/
-│   └── style.css           # Estilos mobile-first, paleta da marca
+├── index.html                 # Página pública
+├── css/style.css
 ├── js/
-│   ├── data.js             # Config central — EDITE AQUI para conteúdo
-│   └── main.js             # Renderização, navbar, carrosséis, contato
+│   ├── data.js                # Gerado — não editar as peças aqui
+│   └── main.js                # Monta a página a partir de data.js
+├── produtos/                  # Fonte da verdade das peças
+│   ├── _ordem.json
+│   └── bolsas/rita/rita.md    # texto + fotos da peça
+├── site.json                  # Marca, bio e contato
+├── admin/public/              # Painel local
+├── server/index.js            # Express, só neste computador
+├── scripts/
+│   ├── build-data.js          # produtos/ + site.json → js/data.js
+│   └── migrate.js             # migração única, já aplicada
+├── docs/arquitetura-produtos.md
+├── img/                       # Logo, foto da artesã, favicon
 ├── fonts/
-│   └── Alice-Regular.ttf   # Fonte do título da marca
-├── img/
-│   ├── logo-fundo-branco-nome.jpeg
-│   ├── logo-fundo-azul.jpeg
-│   ├── milena.jpeg          # Foto da artesã
-│   ├── favicon.ico          # Favicon 32x32
-│   ├── favicon-192.png      # Favicon Android
-│   ├── apple-touch-icon.png # Favicon iOS
-│   └── produtos/            # Fotos dos produtos (até 3 por produto)
-├── CNAME                    # Domínio no GitHub Pages
-└── .gitignore
+└── CNAME
 ```
 
-## Como atualizar conteúdo
+As decisões e o formato dos arquivos estão em [docs/arquitetura-produtos.md](docs/arquitetura-produtos.md).
 
-Todo o conteúdo editável do site vive em **`js/data.js`**. Para alterar textos, produtos, fotos ou dados de contato, basta editar esse arquivo. O restante do site renderiza automaticamente.
+## Como atualizar as peças
 
-### Editar dados da artesã
+O painel cria as pastas, o texto e os nomes das fotos. Não é preciso editar `js/data.js`.
 
-```js
-artisan: {
-  name: "Milena",
-  role: "Artesã · Crochê & Macramê",
-  bio: ["Sua bio aqui..."]
-}
+```bash
+npm install
+npm start
 ```
 
-### Editar contato (WhatsApp / e-mail)
+Abra [http://127.0.0.1:3847/admin](http://127.0.0.1:3847/admin).
 
-```js
-contact: {
-  whatsappNumber: "5571993044037",   // formato internacional, só números
-  whatsappDisplay: "(71) 99304-4037",
-  whatsappMessage: "Olá, Milena! ...",
-  email: "milena@nephila.com.br"
-}
+1. Crie ou escolha uma categoria (Bolsas, Decoração…). O texto dela aparece no site acima das peças.
+2. Cadastre a peça: nome, descrição, materiais (um por linha), preço em reais e fotos.
+3. As fotos podem ter qualquer nome no computador. Ao salvar, viram `nome-da-peca-0.jpeg`, `nome-da-peca-1.jpeg`…
+4. Clique em **Gerar site**.
+5. Confira em [http://127.0.0.1:3847/](http://127.0.0.1:3847/).
+
+Para publicar em nephilaatelie.com.br, envie as alterações ao GitHub (`git add`, commit e push). O painel não faz isso.
+
+Peças que já estavam no site foram migradas com o preço **Sob consulta** e sem lista de materiais. Abra cada uma no painel para completar.
+
+## Marca, bio e contato
+
+Esses dados ficam em `site.json`. Depois de editar, gere de novo:
+
+```bash
+npm run build
 ```
 
-### Adicionar um produto
+Ou use **Gerar site** no painel. Os dois fazem a mesma coisa.
 
-```js
-{
-  id: "nome-do-produto",
-  name: "Nome do Produto",
-  category: "bolsas",          // bolsas | decoracao | acessorios
-  desc: "Descrição curta.",
-  photos: ["img/produtos/foto1.jpeg"]  // até 3 fotos (carrossel automático)
-}
-```
+## Publicar uma peça direto nas pastas
 
-### Adicionar fotos a um produto existente
+Dá para fazer sem o painel, desde que a convenção seja respeitada:
 
-Basta acrescentar mais caminhos no array `photos`:
+1. Crie `produtos/bolsas/rosa/`.
+2. Escreva `rosa.md` com título, descrição, materiais e preço. O modelo está em [docs/arquitetura-produtos.md](docs/arquitetura-produtos.md).
+3. Coloque as fotos como `rosa-0.jpeg`, `rosa-1.jpeg`.
+4. Rode `npm run build`.
 
-```js
-photos: ["img/produtos/foto1.jpeg", "img/produtos/foto2.jpeg", "img/produtos/foto3.jpeg"]
-```
+## Como um agente de IA deve atualizar
 
-### Criar uma nova categoria
+**Não edite as peças em `js/data.js`.** Esse arquivo é gerado.
 
-Adicione em `SITE.categories`:
+1. Alterar `produtos/` (ou orientar o uso do painel) e, se for marca ou contato, `site.json`.
+2. Rodar `npm run build`.
+3. Validar com `node --check js/data.js` e `node --check js/main.js`.
 
-```js
-{ id: "novo-id", label: "Nome da Categoria", blurb: "Descrição curta." }
-```
-
-E use o mesmo `id` no campo `category` dos produtos.
-
-## Como usar um agente de IA para atualizar
-
-Este projeto foi organizado para que agentes de IA (como opencode, Cursor, Copilot) possam atualizar o conteúdo de forma segura e simples.
-
-### Regra principal
-
-**Edite apenas `js/data.js` para conteúdo.** O HTML, CSS e JS principal não precisam ser alterados para mudanças de texto, fotos ou produtos.
-
-### Exemplos de comandos para o agente
-
-```
-"Adicione o produto 'Rosa' na categoria bolsas com a foto img/produtos/rosa.jpeg"
-"Troque o telefone de WhatsApp para (71) 99999-9999"
-"Atualize a bio da Milena para: ..."
-"Adicione uma nova categoria chamada 'Chapéus'"
-"Coloque 3 fotos no produto Gabi: foto1, foto2, foto3"
-```
-
-### O que o agente deve fazer
-
-1. Ler `js/data.js` para entender a estrutura
-2. Fazer a alteração solicitada no arquivo `data.js`
-3. Rodar `node --check js/main.js` para validar sintaxe JS
-4. Fazer commit e push das alterações
-
-### O que o agente NÃO deve alterar sem pedir
-
-- Estrutura HTML (`index.html`)
-- Estilos CSS (`css/style.css`)
-- Lógica JS (`js/main.js`)
-- Nomes ou caminhos de arquivos de imagem
-- Configuração do domínio (`CNAME`)
+HTML, CSS, `js/main.js` e `CNAME` só mudam quando o comportamento ou o visual da página precisam mudar.
 
 ## Tecnologias
 
-- HTML, CSS e JavaScript puros (sem frameworks)
+- Página pública: HTML, CSS e JavaScript puros
+- Painel local: Node.js e Express
 - Google Fonts (Fraunces, Jost) com fallback offline
 - Fonte local Alice para o título da marca
 - Design mobile-first, responsivo

@@ -1,8 +1,8 @@
 /* ============================================================
    NEPHILA — main.js
    Renderiza a página a partir de js/data.js.
-   Fluxo: data.js (conteúdo) -> main.js (interfaces)
-   Altere conteúdo em data.js; altere comportamento aqui.
+   Fluxo: produtos/ + site.json -> build -> data.js -> main.js
+   Peças: painel (npm start) ou pasta produtos/. Comportamento da página: aqui.
    ============================================================ */
 
 (function () {
@@ -22,7 +22,7 @@
   const catOf = (id) => D.categories.find((c) => c.id === id);
 
   /* ---------------- <head> básico ---------------- */
-  document.title = D.brand + " · Crochê & Macramê";
+  document.title = D.brand + " · Crochê & Macramê artesanal por " + D.artisan.firstName;
 
   /* ---------------- Hero ---------------- */
   $("#heroArtisan").textContent = D.artisan.name;
@@ -227,29 +227,48 @@
   function buildCard(p) {
     const article = document.createElement("article");
     article.className = "card reveal";
+    const photos = Array.isArray(p.photos) ? p.photos.filter(Boolean) : [];
+    const materials = Array.isArray(p.materials) ? p.materials.filter(Boolean) : [];
 
-    const car = buildCarousel(p.photos, p.name);
+    if (photos.length) {
+      article.appendChild(buildCarousel(photos, p.name));
+    } else {
+      const empty = document.createElement("div");
+      empty.className = "carousel carousel--empty";
+      empty.textContent = "Foto em breve";
+      article.appendChild(empty);
+    }
+
+    const price = p.price ? '<p class="card__price">' + esc(p.price) + "</p>" : "";
+    const materialsHtml = materials.length
+      ? '<ul class="card__materials" aria-label="Materiais">' +
+        materials.map((item) => "<li>" + esc(item) + "</li>").join("") +
+        "</ul>"
+      : "";
+    const tech = materials.length ? "" : '<span class="card__tech">Crochê · Macramê</span>';
+    const priceNote = p.price ? " (" + p.price + ")" : "";
 
     const body = document.createElement("div");
     body.className = "card__body";
     body.innerHTML =
       '<h3 class="card__name">' + esc(p.name) + "</h3>" +
+      price +
       '<p class="card__desc">' + esc(p.desc || "") + "</p>" +
-      '<div class="card__cta">' +
-      '<span class="card__tech">Crochê · Macramê</span>' +
+      materialsHtml +
+      '<div class="card__cta' + (materials.length ? " card__cta--end" : "") + '">' +
+      tech +
       '<a class="card__ask" target="_blank" rel="noopener" data-wa-produto="' +
       esc(p.name) +
       '" href="' +
-      waUrl("Olá, " + D.artisan.firstName + "! Vi o modelo " + p.name + " no site Nephila e quero saber mais.") +
+      waUrl("Olá, " + D.artisan.firstName + "! Vi o modelo " + p.name + priceNote + " no site Nephila e quero saber mais.") +
       '">Quero saber mais</a>' +
       "</div>";
 
-    article.appendChild(car);
     article.appendChild(body);
     return article;
   }
 
-  /* --- Carrossel (1 a 3 fotos) --- */
+  /* --- Carrossel --- */
   function buildCarousel(photos, productName) {
     const el = document.createElement("div");
     el.className = "carousel";

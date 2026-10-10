@@ -1,0 +1,25 @@
+{
+  "categories": [
+    "bolsas",
+    "decoracao",
+    "acessorios"
+  ],
+  "products": {
+    "bolsas": [
+      "rita",
+      "gabi",
+      "duda",
+      "nanda",
+      "melina",
+      "malu",
+      "lux",
+      "flor",
+      "trigo",
+      "bau",
+      "trio",
+      "novo-modelo"
+    ],
+    "decoracao": [],
+    "acessorios": []
+  }
+}
