@@ -329,6 +329,18 @@ function publish(message) {
   };
 }
 
+function pending() {
+  const files = readStatus().map((entry) => entry.path);
+  const unpushed = git(["diff", "--name-only", "-z", "@{upstream}", "HEAD", "--"].concat(ALLOWED));
+  if (unpushed.status === 0) {
+    String(unpushed.stdout || "").split("\0").forEach((file) => {
+      const norm = normalizePath(file);
+      if (norm && isAllowed(norm) && files.indexOf(norm) === -1) files.push(norm);
+    });
+  }
+  return { empty: files.length === 0 };
+}
+
 function pushDryRun() {
   const result = git(["push", "--dry-run"], { timeout: 60000 });
   return {
@@ -345,6 +357,7 @@ module.exports = {
   composeMessage,
   isAllowed,
   preview,
+  pending,
   publish,
   pushDryRun
 };

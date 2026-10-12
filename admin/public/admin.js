@@ -5,6 +5,7 @@ const state = {
   view: { type: "home" },
   dirty: false,
   pending: [],
+  unpublished: false,
   saving: false
 };
 
@@ -32,10 +33,52 @@ function slugify(text) {
     .replace(/-+$/g, "");
 }
 
+let statusTimer = null;
+
 function setStatus(message, kind) {
   const el = document.getElementById("status");
+  const text = document.getElementById("statusText");
+  if (statusTimer) {
+    clearTimeout(statusTimer);
+    statusTimer = null;
+  }
+  if (!message) {
+    el.hidden = true;
+    el.className = "status";
+    text.textContent = "";
+    return;
+  }
+  el.hidden = false;
   el.className = "status" + (kind ? " is-" + kind : "");
-  el.textContent = message || "";
+  text.textContent = message;
+  statusTimer = setTimeout(() => setStatus(""), 6000);
+}
+
+function pieceNeedsSave() {
+  if (state.view.type !== "product") return false;
+  if (!state.view.slug) return true;
+  return state.dirty || state.pending.length > 0;
+}
+
+function syncActionBar() {
+  const save = pieceNeedsSave();
+  const publish = !save && state.unpublished;
+  const bar = document.getElementById("actionBar");
+  document.getElementById("btnSavePiece").hidden = !save;
+  document.getElementById("btnPublish").hidden = !publish;
+  document.getElementById("btnBuild").hidden = save;
+  bar.classList.toggle("is-saving", save);
+  bar.classList.toggle("is-single", !save && !publish);
+}
+
+function refreshUnpublished() {
+  return api("/api/publish/pending").then((result) => {
+    state.unpublished = !result.empty;
+    syncActionBar();
+  }).catch(() => {
+    state.unpublished = false;
+    syncActionBar();
+  });
 }
 
 async function api(url, options) {
@@ -78,6 +121,15 @@ function go(view) {
   state.dirty = false;
   state.view = view;
   render();
+  scrollFormToTop();
+}
+
+function scrollFormToTop() {
+  if (state.view.type !== "category" && state.view.type !== "category-form" && state.view.type !== "product") return;
+  const workspace = document.getElementById("workspace");
+  if (!workspace) return;
+  const top = workspace.getBoundingClientRect().top + window.scrollY;
+  window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
 }
 
 function pieceCount(n) {
@@ -104,7 +156,7 @@ function renderHome() {
     "<ol class=\"steps\">" +
     "<li>Crie uma categoria — por exemplo, Bolsas. O texto dela aparece no site acima das peças.</li>" +
     "<li>Abra a categoria e cadastre a peça: nome, descrição, materiais, preço e fotos.</li>" +
-    "<li>Clique em <strong>Gerar site</strong> para ver a página neste computador. Depois, <strong>Publicar</strong> envia as peças ao ar.</li>" +
+    "<li>Clique em <strong>Ver Site</strong> para atualizar a página neste computador. Depois, <strong>Publicar atualização</strong> envia as peças ao ar.</li>" +
     "</ol>" +
     "<p class=\"hint\">As fotos não precisam estar com o nome certo. O painel grava como nome-da-peca-0.jpeg, nome-da-peca-1.jpeg e assim por diante.</p>"
   );
@@ -211,7 +263,7 @@ function renderProductForm() {
   return (
     "<button type=\"button\" class=\"back\" data-action=\"open-category\" data-id=\"" + esc(state.view.category) + "\">Voltar para a categoria</button>" +
     "<h2>" + (product ? "Editar " + esc(product.name) : "Nova peça") + "</h2>" +
-    "<form class=\"form\" data-form=\"product\">" +
+    "<form class=\"form\" id=\"productForm\" data-form=\"product\">" +
     "<label><span>Categoria</span><select name=\"category\" required>" + categoryOptions(selected) + "</select></label>" +
     "<label><span>Nome da peça</span><input name=\"name\" type=\"text\" required maxlength=\"80\" value=\"" + esc(product ? product.name : "") + "\" placeholder=\"Rita\">" +
     "<p class=\"slug\" id=\"slugHint\"></p></label>" +
@@ -233,10 +285,9 @@ function renderProductForm() {
     "</div>" +
     "<p class=\"hint\">O nome original não importa. Ao salvar, viram nome-da-peca-0.jpeg, nome-da-peca-1.jpeg…</p>" +
     "</div>" +
-    "<div class=\"form__row\">" +
-    "<button class=\"btn btn--dark\" type=\"submit\">Salvar peça</button>" +
-    (product ? "<button class=\"btn btn--quiet\" type=\"button\" data-action=\"delete-product\">Excluir peça</button>" : "") +
-    "</div>" +
+    (product
+      ? "<div class=\"form__row\"><button class=\"btn btn--quiet\" type=\"button\" data-action=\"delete-product\">Excluir peça</button></div>"
+      : "") +
     "</form>"
   );
 }
@@ -261,6 +312,7 @@ function renderWorkspace() {
 function render() {
   renderCategories();
   renderWorkspace();
+  syncActionBar();
 }
 
 function updateSlugHint() {
@@ -310,6 +362,7 @@ function addPending(fileList) {
   }
   state.dirty = true;
   fillPhotos();
+  syncActionBar();
 }
 
 async function saveCategory(form) {
@@ -332,7 +385,9 @@ async function saveCategory(form) {
     state.dirty = false;
     state.view = { type: "category", id: result.category };
     render();
+    scrollFormToTop();
     setStatus("Categoria salva.", "ok");
+    refreshUnpublished();
   } catch (err) {
     setStatus(err.message, "error");
   } finally {
@@ -373,8 +428,10 @@ async function saveProduct(form) {
       clearPending();
     }
     state.dirty = false;
+    state.unpublished = true;
     render();
-    setStatus("Peça salva. Quando terminar as alterações, clique em Gerar site.", "ok");
+    setStatus("Peça salva.", "ok");
+    refreshUnpublished();
   } catch (err) {
     setStatus(err.message, "error");
   } finally {
@@ -389,7 +446,8 @@ async function removePhoto(index) {
   );
   state.catalog = result.catalog;
   fillPhotos();
-  setStatus("Foto removida. Gere o site de novo para a página pública atualizar.", "ok");
+  refreshUnpublished();
+  setStatus("Foto removida.", "ok");
 }
 
 async function movePhoto(index, dir) {
@@ -408,6 +466,7 @@ async function movePhoto(index, dir) {
   );
   state.catalog = result.catalog;
   fillPhotos();
+  refreshUnpublished();
 }
 
 async function deleteCategory(id) {
@@ -418,6 +477,7 @@ async function deleteCategory(id) {
   state.view = { type: "home" };
   render();
   setStatus("Categoria excluída.", "ok");
+  refreshUnpublished();
 }
 
 async function deleteProduct() {
@@ -433,30 +493,33 @@ async function deleteProduct() {
   state.dirty = false;
   state.view = { type: "category", id: category };
   render();
-  setStatus("Peça excluída. Gere o site e publique para tirar ela da página no ar.", "ok");
+  setStatus("Peça excluída. Use Ver Site e publique para tirar ela da página no ar.", "ok");
+  refreshUnpublished();
 }
 
 async function buildSite() {
-  if (state.dirty) {
-    setStatus("Salve as alterações antes de gerar o site.", "error");
+  if (state.dirty || state.pending.length) {
+    setStatus("Salve as alterações antes de ver o site.", "error");
     return;
   }
   const button = document.getElementById("btnBuild");
   button.disabled = true;
-  button.textContent = "Gerando…";
+  button.textContent = "Abrindo…";
   try {
     const result = await api("/api/build", { method: "POST" });
     const warnings = result.warnings || [];
     const tail = warnings.length ? " Avisos: " + warnings.join(" ") : "";
+    window.open("/", "_blank", "noopener");
+    refreshUnpublished();
     setStatus(
-      "Site gerado com " + result.products + " peças. Abra Ver o site para conferir. Para o site no ar mudar, use Publicar." + tail,
+      "Página atualizada neste computador, com " + result.products + " peças." + tail,
       warnings.length ? "warn" : "ok"
     );
   } catch (err) {
     setStatus(err.message, "error");
   } finally {
     button.disabled = false;
-    button.textContent = "Gerar site";
+    button.textContent = "Ver Site";
   }
 }
 
@@ -480,6 +543,7 @@ function onClick(event) {
     const removed = state.pending.splice(index, 1)[0];
     if (removed) URL.revokeObjectURL(removed.url);
     fillPhotos();
+    syncActionBar();
   }
   if (action === "remove-photo") {
     removePhoto(button.dataset.index).catch((err) => setStatus(err.message, "error"));
@@ -530,7 +594,7 @@ async function openPublish() {
     setStatus(err.message, "error");
   } finally {
     button.disabled = false;
-    button.textContent = "Publicar";
+    button.textContent = "Publicar atualização";
   }
 }
 
@@ -545,6 +609,9 @@ async function confirmPublish() {
       body: JSON.stringify({ message: document.getElementById("publishMessage").value })
     });
     closePublish();
+    state.unpublished = !result.pushed;
+    syncActionBar();
+    refreshUnpublished();
     if (result.pushed) {
       setStatus("Peças publicadas" + (result.commit ? " (" + result.commit + ")" : "") + ". O site no ar atualiza em instantes.", "ok");
     } else {
@@ -559,6 +626,7 @@ async function confirmPublish() {
 }
 
 document.getElementById("btnPublish").addEventListener("click", openPublish);
+document.getElementById("statusClose").addEventListener("click", () => setStatus(""));
 document.getElementById("publishCancel").addEventListener("click", closePublish);
 document.getElementById("publishConfirm").addEventListener("click", confirmPublish);
 document.getElementById("publishSheet").addEventListener("click", (event) => {
@@ -578,6 +646,7 @@ document.getElementById("workspace").addEventListener("input", (event) => {
   if (event.target.id === "photoInput") return;
   state.dirty = true;
   updateSlugHint();
+  syncActionBar();
 });
 
 document.getElementById("workspace").addEventListener("change", (event) => {
@@ -608,6 +677,7 @@ document.getElementById("workspace").addEventListener("drop", (event) => {
 api("/api/catalog").then((catalog) => {
   state.catalog = catalog;
   render();
+  refreshUnpublished();
   if (catalog.warnings && catalog.warnings.length) {
     setStatus("Há textos para revisar: " + catalog.warnings.join(" "), "warn");
   }

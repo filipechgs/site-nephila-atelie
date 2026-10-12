@@ -110,6 +110,8 @@ app.post("/api/build", route(() => {
   return Object.assign({ ok: true }, result);
 }));
 
+app.get("/api/publish/pending", route(() => publisher.pending()));
+
 app.post("/api/publish/preview", route(() => publisher.preview()));
 
 app.post("/api/publish", route((req) => publisher.publish((req.body || {}).message)));

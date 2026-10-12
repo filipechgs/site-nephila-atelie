@@ -7,7 +7,7 @@ Decisões de como as peças do site Nephila são guardadas, editadas e publicada
 - A fonte da verdade das peças é a pasta `produtos/`, não o `js/data.js`.
 - Um script lê essa pasta e gera `js/data.js`. O `index.html` e o `js/main.js` continuam iguais: o site público segue estático no GitHub Pages.
 - O painel de edição usa Node e Express, sem login. Ele escuta na rede de casa, na porta `3847`. Ao iniciar, o console mostra a URL absoluta para abrir de outro aparelho.
-- Quem cria e edita categorias, textos e fotos é o painel. **Gerar site** só atualiza a página neste computador. **Publicar** faz commit e push, depois de uma confirmação.
+- Quem cria e edita categorias, textos e fotos é o painel. **Ver Site** atualiza a página neste computador e abre a prévia. **Publicar atualização** faz commit e push, depois de uma confirmação.
 - Marca, bio e contato ficam em `site.json`. O painel não altera esses dados.
 - O preço é o último parágrafo do Markdown da peça, em reais, como deve aparecer no site (exemplo: `R$ 180,00`).
 - As fotos podem ser enviadas com qualquer nome. O servidor grava `nome-da-peca-0.jpeg`, `nome-da-peca-1.jpeg` e assim por diante.
@@ -18,7 +18,7 @@ Decisões de como as peças do site Nephila são guardadas, editadas e publicada
 produtos/  +  site.json
         │
         ▼
- scripts/build-data.js     ← também pelo botão Gerar site
+ scripts/build-data.js     ← também pelo botão Ver Site
         │
         ▼
     js/data.js
@@ -27,7 +27,7 @@ produtos/  +  site.json
  index.html + js/main.js   ← GitHub Pages
 ```
 
-Salvar uma peça não publica. **Gerar site** atualiza a página neste computador. **Publicar** envia ao GitHub, com a mensagem à vista antes do envio.
+Salvar uma peça não publica. **Ver Site** atualiza a página neste computador e abre a prévia. **Publicar atualização** envia ao GitHub, com a mensagem à vista antes do envio.
 
 ## Rede de casa
 
@@ -44,7 +44,7 @@ A tela do painel se adapta ao celular: os botões principais ficam fixos no roda
 
 ## Publicar
 
-O botão **Publicar** gera o site de novo, mostra a mensagem e a lista de arquivos, e só então faz o commit e o `git push` da branch atual para o remoto que ela já acompanha.
+O botão **Publicar atualização** gera o site de novo, mostra a mensagem e a lista de arquivos, e só então faz o commit e o `git push` da branch atual para o remoto que ela já acompanha.
 
 Entram no commit apenas:
 
@@ -146,7 +146,7 @@ Renomear o nome visível também renomeia a pasta e os arquivos, para o slug con
 
 - Login no painel.
 - Editar bio, WhatsApp ou e-mail pelo painel (isso é o `site.json`).
-- Publicar a cada salvamento. O envio ao GitHub só acontece no botão **Publicar**, com confirmação.
+- Publicar a cada salvamento. O envio ao GitHub só acontece no botão **Publicar atualização**, com confirmação.
 - Gerar um `index.html` novo. A página já existe e lê o `js/data.js`.
 
 ## Peças migradas

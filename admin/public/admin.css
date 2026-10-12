@@ -19,6 +19,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   min-height: 100vh;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
   font-family: var(--font-body);
   font-weight: 400;
   color: var(--ink);
@@ -61,7 +62,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .lede { max-width: 46rem; color: var(--ink-soft); }
 .lede strong { color: var(--teal-800); font-weight: 500; }
-.top__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .btn {
   display: inline-flex;
@@ -94,17 +94,56 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 
 .status {
-  min-height: 0;
-  margin: 0 0 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
   padding: 12px 14px;
-  border-radius: 12px;
   background: var(--cream-soft);
   color: var(--teal-800);
+  border-bottom: 1px solid rgba(12, 55, 71, 0.12);
+  box-shadow: 0 10px 24px -16px rgba(12, 55, 71, 0.45);
 }
-.status:empty { display: none; }
+.status[hidden] { display: none; }
+.status p { flex: 1; }
+.status__close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -6px -4px -6px 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--teal-800);
+  font-size: 1.5rem;
+  line-height: 1;
+}
 .status.is-ok { background: #e7f2ea; }
 .status.is-error { background: #f8e6e0; }
 .status.is-warn { background: #f8efd8; }
+
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(248, 241, 233, 0.96);
+  border-top: 1px solid rgba(12, 55, 71, 0.12);
+}
+.action-bar.is-saving,
+.action-bar.is-single { grid-template-columns: 1fr; }
+.action-bar .btn { min-height: 44px; }
+.action-bar .btn[hidden] { display: none; }
 
 .layout {
   display: grid;
@@ -291,25 +330,9 @@ textarea { min-height: 110px; resize: vertical; }
 }
 
 @media (max-width: 640px) {
-  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
   .top { padding-top: 22px; }
-  .top__actions {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin: 0;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(248, 241, 233, 0.96);
-    border-top: 1px solid rgba(12, 55, 71, 0.12);
-  }
-  .top__actions .btn {
-    min-height: 44px;
-    padding: 0.55rem 0.35rem;
+  .action-bar .btn {
+    padding: 0.55rem 0.4rem;
     font-size: 0.86rem;
   }
   .workspace__head,

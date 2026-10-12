@@ -49,10 +49,10 @@ Neste computador, abra [http://127.0.0.1:3847/admin](http://127.0.0.1:3847/admin
 1. Crie ou escolha uma categoria (Bolsas, Decoração…). O texto dela aparece no site acima das peças.
 2. Cadastre a peça: nome, descrição, materiais (um por linha), preço em reais e fotos.
 3. As fotos podem ter qualquer nome no computador. Ao salvar, viram `nome-da-peca-0.jpeg`, `nome-da-peca-1.jpeg`…
-4. Clique em **Gerar site** e confira em [http://127.0.0.1:3847/](http://127.0.0.1:3847/).
-5. Clique em **Publicar**. O painel mostra a mensagem e os arquivos. **Enviar ao ar** faz o commit e o push para o GitHub Pages.
+4. Clique em **Ver Site**. O painel atualiza a página e abre a prévia.
+5. Clique em **Publicar atualização**. O painel mostra a mensagem e os arquivos. **Enviar ao ar** faz o commit e o push para o GitHub Pages.
 
-**Publicar** envia só `produtos/`, `js/data.js` e `site.json`. Quem edita as pastas à mão pode usar o mesmo botão depois de gerar o site. Se o celular não abrir o painel, permita o Node no Firewall do Windows, na rede privada.
+**Publicar atualização** envia só `produtos/`, `js/data.js` e `site.json`. Quem edita as pastas à mão pode usar o mesmo botão depois de ver o site. Se o celular não abrir o painel, permita o Node no Firewall do Windows, na rede privada.
 
 Peças que já estavam no site foram migradas com o preço **Sob consulta** e sem lista de materiais. Abra cada uma no painel para completar.
 
@@ -64,7 +64,7 @@ Esses dados ficam em `site.json`, inclusive os links de Instagram e Mercado Livr
 npm run build
 ```
 
-Ou use **Gerar site** no painel. Os dois fazem a mesma coisa.
+Ou use **Ver Site** no painel. Os dois fazem a mesma coisa, e o botão também abre a prévia.
 
 ## Publicar uma peça direto nas pastas
 
@@ -73,7 +73,7 @@ Dá para fazer sem o painel, desde que a convenção seja respeitada:
 1. Crie `produtos/bolsas/rosa/`.
 2. Escreva `rosa.md` com título, descrição, materiais e preço. O modelo está em [docs/arquitetura-produtos.md](docs/arquitetura-produtos.md).
 3. Coloque as fotos como `rosa-0.jpeg`, `rosa-1.jpeg`.
-4. Rode `npm run build`, ou abra o painel e use **Publicar**.
+4. Rode `npm run build`, ou abra o painel e use **Publicar atualização**.
 
 ## Como um agente de IA deve atualizar
 

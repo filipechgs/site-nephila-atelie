@@ -17,16 +17,14 @@
       <div>
         <p class="brand">Nephila</p>
         <h1>Organizar peças</h1>
-        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. <strong>Gerar site</strong> atualiza a página aqui. <strong>Publicar</strong> envia as peças ao ar.</p>
-      </div>
-      <div class="top__actions" id="actionBar">
-        <a class="btn btn--ghost" href="/" target="_blank" rel="noopener">Ver o site</a>
-        <button class="btn btn--ghost" id="btnPublish" type="button">Publicar</button>
-        <button class="btn btn--gold" id="btnBuild" type="button">Gerar site</button>
+        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. <strong>Ver Site</strong> atualiza a página neste computador e abre a prévia. <strong>Publicar atualização</strong> envia as peças ao ar.</p>
       </div>
     </header>
 
-    <p id="status" class="status" role="status"></p>
+    <div id="status" class="status" role="status" hidden>
+      <p id="statusText"></p>
+      <button type="button" class="status__close" id="statusClose" aria-label="Fechar aviso">×</button>
+    </div>
 
     <div class="layout">
       <aside class="panel">
@@ -41,9 +39,15 @@
     </div>
 
     <footer class="foot">
-      <p>Gerar site atualiza a página neste computador. Publicar envia só as peças ao GitHub, para o site nephilaatelie.com.br. Quem estiver na mesma rede Wi-Fi também pode abrir este painel.</p>
+      <p>Ver Site atualiza a página neste computador e abre a prévia. Publicar atualização envia só as peças ao GitHub, para o site nephilaatelie.com.br. Quem estiver na mesma rede Wi-Fi também pode abrir este painel.</p>
     </footer>
   </div>
+
+  <nav class="action-bar is-single" id="actionBar" aria-label="Ações do painel">
+    <button class="btn btn--gold" id="btnSavePiece" type="submit" form="productForm" hidden>Salvar peça</button>
+    <button class="btn btn--ghost" id="btnPublish" type="button" hidden>Publicar atualização</button>
+    <button class="btn btn--gold" id="btnBuild" type="button">Ver Site</button>
+  </nav>
 
   <div id="publishSheet" class="sheet" hidden>
     <div class="sheet__card" role="dialog" aria-modal="true" aria-labelledby="publishTitle">

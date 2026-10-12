@@ -10,7 +10,7 @@ Site portfólio da Nephila (ateliê de crochê e macramê). Publicado via GitHub
 
 A página pública continua data-driven. As peças não são mais editadas em `js/data.js`: a pasta `produtos/` é a fonte da verdade, e `scripts/build-data.js` gera o `data.js`. Marca, bio e contato vêm de `site.json`.
 
-Há um painel (Express, sem login) para criar e editar categorias, peças e fotos. Ele escuta na rede local, não só em localhost: ao iniciar, o console mostra a URL absoluta. **Gerar site** roda o build. **Publicar** faz commit e push apenas de `produtos/`, `js/data.js` e `site.json`.
+Há um painel (Express, sem login) para criar e editar categorias, peças e fotos. Ele escuta na rede local, não só em localhost: ao iniciar, o console mostra a URL absoluta. **Ver Site** roda o build e abre a prévia. **Publicar atualização** faz commit e push apenas de `produtos/`, `js/data.js` e `site.json`.
 
 Detalhes e o formato dos Markdown: `docs/arquitetura-produtos.md`.
 
@@ -136,4 +136,4 @@ node --check js/main.js
 7. **Preservar a paleta** (teal/dourado/creme)
 8. **Commit em português**
 9. **Não rodar `npm run migrate` de novo** — a migração das fotos antigas já foi feita
-10. **Não publicar pelo painel** salvo pedido explícito. O botão envia só `produtos/`, `js/data.js` e `site.json`
+10. **Não publicar pelo painel** salvo pedido explícito. **Publicar atualização** envia só `produtos/`, `js/data.js` e `site.json`
