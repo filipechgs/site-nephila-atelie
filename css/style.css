@@ -1,7 +1,7 @@
 /* ============================================================
    NEPHILA — style.css
    Paleta extraída das logos (img/logo-fundo-azul.jpeg e
-   img/logo-fundo-branco-nome.jpeg):
+   img/logo-fundo-transparente-nome.png):
      --teal-700 #0C3747  (fundo azul da logo)
      --gold     #CDA550  (dourado da logo)
      --cream    #F8F1E9  (fundo claro da logo com nome)
@@ -207,7 +207,10 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 .hero__banner-img {
   display: block;
-  width: min(88vw, 560px);
+  /* Logo vertical transparente: largura menor para equivaler ao enquadramento
+     anterior (JPEG paisagem 3:2 com a marca centralizada). */
+  width: min(48vw, 280px);
+  height: auto;
   margin-inline: auto;
   border-radius: var(--radius-lg);
 }
@@ -432,7 +435,7 @@ ul { list-style: none; margin: 0; padding: 0; }
    ============================================================ */
 .footer { background: var(--teal-900); color: rgba(248, 241, 233, 0.7); padding: 34px 0; }
 .footer__inner { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
-.footer__brand img { height: 40px; border-radius: 8px; }
+.footer__brand img { height: 80px; width: auto; border-radius: 8px; }
 .footer__credit { font-size: 0.85rem; letter-spacing: 0.04em; }
 
 .float-whatsapp {
@@ -567,7 +570,7 @@ body.modal-open { overflow: hidden; }
     gap: 48px;
   }
   .hero__banner { margin-top: 0; padding: 0; }
-  .hero__banner-img { width: min(100%, 480px); }
+  .hero__banner-img { width: min(100%, 250px); }
   .hero__body { padding: 135px 0 130px; }
   .hero__text { text-align: left; margin-inline: 0; max-width: none; }
   .hero__copy { margin-left: 0; margin-right: 0; }
