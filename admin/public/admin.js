@@ -104,7 +104,7 @@ function renderHome() {
     "<ol class=\"steps\">" +
     "<li>Crie uma categoria — por exemplo, Bolsas. O texto dela aparece no site acima das peças.</li>" +
     "<li>Abra a categoria e cadastre a peça: nome, descrição, materiais, preço e fotos.</li>" +
-    "<li>Clique em <strong>Gerar site</strong>. A página deste computador passa a mostrar o que você salvou.</li>" +
+    "<li>Clique em <strong>Gerar site</strong> para ver a página neste computador. Depois, <strong>Publicar</strong> envia as peças ao ar.</li>" +
     "</ol>" +
     "<p class=\"hint\">As fotos não precisam estar com o nome certo. O painel grava como nome-da-peca-0.jpeg, nome-da-peca-1.jpeg e assim por diante.</p>"
   );
@@ -175,8 +175,8 @@ function photoCard(photo, position, total) {
     "<li class=\"photo\"><img src=\"/" + esc(photo.src) + "\" alt=\"\">" +
     "<span class=\"photo__name\">" + esc(photo.file) + "</span>" +
     "<div class=\"photo__actions\">" +
-    "<button type=\"button\" data-action=\"move-photo\" data-index=\"" + photo.index + "\" data-dir=\"-1\"" + (position === 0 ? " disabled" : "") + ">Para a esquerda</button>" +
-    "<button type=\"button\" data-action=\"move-photo\" data-index=\"" + photo.index + "\" data-dir=\"1\"" + (position === total - 1 ? " disabled" : "") + ">Para a direita</button>" +
+    "<button type=\"button\" data-action=\"move-photo\" data-index=\"" + photo.index + "\" data-dir=\"-1\" aria-label=\"Mover foto para a esquerda\"" + (position === 0 ? " disabled" : "") + ">Esquerda</button>" +
+    "<button type=\"button\" data-action=\"move-photo\" data-index=\"" + photo.index + "\" data-dir=\"1\" aria-label=\"Mover foto para a direita\"" + (position === total - 1 ? " disabled" : "") + ">Direita</button>" +
     "<button type=\"button\" data-action=\"remove-photo\" data-index=\"" + photo.index + "\">Remover</button>" +
     "</div></li>"
   );
@@ -430,7 +430,7 @@ async function deleteProduct() {
   state.dirty = false;
   state.view = { type: "category", id: category };
   render();
-  setStatus("Peça excluída. Gere o site para tirar ela da página.", "ok");
+  setStatus("Peça excluída. Gere o site e publique para tirar ela da página no ar.", "ok");
 }
 
 async function buildSite() {
@@ -446,7 +446,7 @@ async function buildSite() {
     const warnings = result.warnings || [];
     const tail = warnings.length ? " Avisos: " + warnings.join(" ") : "";
     setStatus(
-      "Site gerado com " + result.products + " peças. Abra Ver o site para conferir. Para publicar no ar, envie as alterações ao GitHub." + tail,
+      "Site gerado com " + result.products + " peças. Abra Ver o site para conferir. Para o site no ar mudar, use Publicar." + tail,
       warnings.length ? "warn" : "ok"
     );
   } catch (err) {
@@ -496,6 +496,74 @@ document.getElementById("catList").addEventListener("click", onClick);
 document.getElementById("workspace").addEventListener("click", onClick);
 document.getElementById("btnNewCategory").addEventListener("click", () => go({ type: "category-form" }));
 document.getElementById("btnBuild").addEventListener("click", buildSite);
+
+function closePublish() {
+  document.getElementById("publishSheet").hidden = true;
+}
+
+async function openPublish() {
+  if (state.dirty) {
+    setStatus("Salve as alterações antes de publicar.", "error");
+    return;
+  }
+  const button = document.getElementById("btnPublish");
+  button.disabled = true;
+  button.textContent = "Preparando…";
+  try {
+    const result = await api("/api/publish/preview", { method: "POST" });
+    if (result.empty) {
+      setStatus("Não há mudanças de peças para publicar.", "warn");
+      return;
+    }
+    document.getElementById("publishMessage").value = result.message || "";
+    const files = document.getElementById("publishFiles");
+    files.innerHTML = (result.files || []).map((file) => "<li>" + esc(file) + "</li>").join("");
+    document.getElementById("publishBranch").textContent = result.branch
+      ? "Branch: " + result.branch
+      : "";
+    document.getElementById("publishSheet").hidden = false;
+    document.getElementById("publishMessage").focus();
+  } catch (err) {
+    setStatus(err.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Publicar";
+  }
+}
+
+async function confirmPublish() {
+  const confirm = document.getElementById("publishConfirm");
+  confirm.disabled = true;
+  confirm.textContent = "Enviando…";
+  try {
+    const result = await api("/api/publish", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      body: JSON.stringify({ message: document.getElementById("publishMessage").value })
+    });
+    closePublish();
+    if (result.pushed) {
+      setStatus("Peças publicadas" + (result.commit ? " (" + result.commit + ")" : "") + ". O site no ar atualiza em instantes.", "ok");
+    } else {
+      setStatus("O commit ficou neste computador. O envio ao GitHub falhou. " + (result.error || ""), "warn");
+    }
+  } catch (err) {
+    setStatus(err.message, "error");
+  } finally {
+    confirm.disabled = false;
+    confirm.textContent = "Enviar ao ar";
+  }
+}
+
+document.getElementById("btnPublish").addEventListener("click", openPublish);
+document.getElementById("publishCancel").addEventListener("click", closePublish);
+document.getElementById("publishConfirm").addEventListener("click", confirmPublish);
+document.getElementById("publishSheet").addEventListener("click", (event) => {
+  if (event.target.id === "publishSheet") closePublish();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closePublish();
+});
 
 document.getElementById("workspace").addEventListener("submit", (event) => {
   event.preventDefault();

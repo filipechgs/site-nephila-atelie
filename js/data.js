@@ -43,7 +43,10 @@ const SITE = {
       "name": "Rita",
       "category": "bolsas",
       "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
+      "materials": [
+        "Fio de poliéster 5mm",
+        "Alça em corda náutica 2.5mm"
+      ],
       "price": "Sob consulta",
       "photos": [
         "produtos/bolsas/rita/rita-0.jpeg"

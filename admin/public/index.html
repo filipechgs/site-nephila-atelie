@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex">
   <title>Nephila — Organizar peças</title>
   <link rel="icon" href="/img/favicon.ico">
@@ -17,10 +17,11 @@
       <div>
         <p class="brand">Nephila</p>
         <h1>Organizar peças</h1>
-        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. Quando terminar, clique em <strong>Gerar site</strong>.</p>
+        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. <strong>Gerar site</strong> atualiza a página aqui. <strong>Publicar</strong> envia as peças ao ar.</p>
       </div>
-      <div class="top__actions">
+      <div class="top__actions" id="actionBar">
         <a class="btn btn--ghost" href="/" target="_blank" rel="noopener">Ver o site</a>
+        <button class="btn btn--ghost" id="btnPublish" type="button">Publicar</button>
         <button class="btn btn--gold" id="btnBuild" type="button">Gerar site</button>
       </div>
     </header>
@@ -40,8 +41,24 @@
     </div>
 
     <footer class="foot">
-      <p>Este painel só funciona neste computador. Gerar site atualiza a página local. Para o endereço nephilaatelie.com.br mudar, envie as alterações ao GitHub depois.</p>
+      <p>Gerar site atualiza a página neste computador. Publicar envia só as peças ao GitHub, para o site nephilaatelie.com.br. Quem estiver na mesma rede Wi-Fi também pode abrir este painel.</p>
     </footer>
+  </div>
+
+  <div id="publishSheet" class="sheet" hidden>
+    <div class="sheet__card" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+      <h2 id="publishTitle">Publicar no ar</h2>
+      <p class="hint">Confira a mensagem. Só as peças, o arquivo gerado do site e o contato entram nesse envio.</p>
+      <label class="sheet__label"><span>Mensagem</span>
+        <textarea id="publishMessage" rows="8" maxlength="4000"></textarea>
+      </label>
+      <ul id="publishFiles" class="sheet__files"></ul>
+      <p class="hint" id="publishBranch"></p>
+      <div class="form__row sheet__actions">
+        <button type="button" class="btn btn--ghost" id="publishCancel">Cancelar</button>
+        <button type="button" class="btn btn--gold" id="publishConfirm">Enviar ao ar</button>
+      </div>
+    </div>
   </div>
   <script src="admin.js"></script>
 </body>

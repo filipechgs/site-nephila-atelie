@@ -198,6 +198,7 @@ textarea { min-height: 110px; resize: vertical; }
   font-size: 0.88rem;
   color: var(--teal-600);
   margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 .form__row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
@@ -213,10 +214,12 @@ textarea { min-height: 110px; resize: vertical; }
 .photo__name { font-size: 0.78rem; color: var(--ink-soft); word-break: break-all; }
 .photo__actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .photo__actions button {
+  flex: 1 1 0;
+  min-width: 0;
   border: 1px solid rgba(12, 55, 71, 0.2);
   background: transparent;
   border-radius: 999px;
-  padding: 4px 8px;
+  padding: 8px 6px;
   font-size: 0.82rem;
 }
 .dropzone {
@@ -243,7 +246,91 @@ textarea { min-height: 110px; resize: vertical; }
 
 .foot { padding: 22px 0 40px; color: var(--ink-soft); font-size: 0.92rem; }
 
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  align-items: end;
+  padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: rgba(7, 31, 42, 0.45);
+}
+.sheet[hidden] { display: none; }
+.sheet__card {
+  width: min(640px, 100%);
+  max-height: calc(100vh - 24px);
+  margin: 0 auto;
+  overflow: auto;
+  background: var(--cream-soft);
+  border-radius: 18px;
+  padding: 18px;
+}
+.sheet__card h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.7rem;
+  color: var(--teal-800);
+}
+.sheet__label { display: block; margin-top: 14px; }
+.sheet__label span { display: block; font-weight: 500; color: var(--teal-800); margin-bottom: 4px; }
+.sheet__files {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  color: var(--teal-700);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.sheet__actions { margin-top: 14px; }
+
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+@media (min-width: 700px) {
+  .sheet { align-items: center; }
+}
+
+@media (max-width: 640px) {
+  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .top { padding-top: 22px; }
+  .top__actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(248, 241, 233, 0.96);
+    border-top: 1px solid rgba(12, 55, 71, 0.12);
+  }
+  .top__actions .btn {
+    min-height: 44px;
+    padding: 0.55rem 0.35rem;
+    font-size: 0.86rem;
+  }
+  .workspace__head,
+  .panel__head { flex-direction: column; align-items: stretch; }
+  .workspace__actions { display: grid; }
+  .photos { grid-template-columns: 1fr; }
+  .photo__actions { flex-wrap: nowrap; }
+  .back { display: inline-flex; align-items: center; min-height: 44px; }
+  .workspace__actions .btn,
+  .form__row .btn,
+  .cat-list button,
+  .piece,
+  .photo__actions button,
+  input[type="text"],
+  textarea,
+  select { min-height: 44px; }
+  textarea { min-height: 120px; }
+  .sheet__actions { flex-direction: column; align-items: stretch; }
+  .sheet__actions .btn { min-height: 44px; }
+  h1, h2, .lede, .hint, .blurb { overflow-wrap: anywhere; }
+}
 
 @media (min-width: 860px) {
   .layout { grid-template-columns: 280px 1fr; }

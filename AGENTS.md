@@ -10,7 +10,7 @@ Site portfólio da Nephila (ateliê de crochê e macramê). Publicado via GitHub
 
 A página pública continua data-driven. As peças não são mais editadas em `js/data.js`: a pasta `produtos/` é a fonte da verdade, e `scripts/build-data.js` gera o `data.js`. Marca, bio e contato vêm de `site.json`.
 
-Há um painel local (Express, sem login, só em `127.0.0.1`) para criar e editar categorias, peças e fotos. O botão **Gerar site** roda o mesmo build.
+Há um painel (Express, sem login) para criar e editar categorias, peças e fotos. Ele escuta na rede local, não só em localhost: ao iniciar, o console mostra a URL absoluta. **Gerar site** roda o build. **Publicar** faz commit e push apenas de `produtos/`, `js/data.js` e `site.json`.
 
 Detalhes e o formato dos Markdown: `docs/arquitetura-produtos.md`.
 
@@ -33,6 +33,7 @@ produtos/ + site.json → scripts/build-data.js → js/data.js → js/main.js �
 | `admin/public/` | Interface do painel | Cuidado |
 | `server/index.js` | API local do painel | Cuidado |
 | `scripts/catalog.js` | Leitura, gravação e build das peças | Cuidado |
+| `scripts/publish.js` | Mensagem, commit e push só das peças | Cuidado |
 | `img/milena.jpeg` | Foto da artesã | SIM — substituir |
 | `fonts/Alice-Regular.ttf` | Fonte do título da marca | Não mexer |
 
@@ -116,7 +117,7 @@ Se `photos` tem 1 foto, controles são ocultos. O card também mostra preço e, 
 
 ```bash
 npm install
-npm start          # painel em http://127.0.0.1:3847/admin
+npm start          # painel; o console mostra a URL da rede de casa
 npm run build      # regenera js/data.js
 
 node --check js/data.js
@@ -134,3 +135,4 @@ node --check js/main.js
 7. **Preservar a paleta** (teal/dourado/creme)
 8. **Commit em português**
 9. **Não rodar `npm run migrate` de novo** — a migração das fotos antigas já foi feita
+10. **Não publicar pelo painel** salvo pedido explícito. O botão envia só `produtos/`, `js/data.js` e `site.json`

@@ -1,9 +1,11 @@
 "use strict";
 
+const os = require("os");
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const catalog = require("../scripts/catalog");
+const publisher = require("../scripts/publish");
 
 const PORT = Number(process.env.PORT) || 3847;
 const ROOT = catalog.ROOT;
@@ -108,6 +110,10 @@ app.post("/api/build", route(() => {
   return Object.assign({ ok: true }, result);
 }));
 
+app.post("/api/publish/preview", route(() => publisher.preview()));
+
+app.post("/api/publish", route((req) => publisher.publish((req.body || {}).message)));
+
 function noStore(req, res, next) {
   res.set("Cache-Control", "no-store");
   next();
@@ -131,7 +137,33 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(ROOT, "index.html"));
 });
 
-app.listen(PORT, "127.0.0.1", () => {
-  console.log("Painel: http://127.0.0.1:" + PORT + "/admin");
+function isHomeIPv4(address) {
+  const parts = String(address || "").split(".").map(Number);
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
+  if (parts[0] === 10) return true;
+  if (parts[0] === 192 && parts[1] === 168) return true;
+  if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+  return false;
+}
+
+function lanAdminUrls(port) {
+  const urls = [];
+  const nets = os.networkInterfaces();
+  Object.keys(nets).forEach((name) => {
+    (nets[name] || []).forEach((net) => {
+      const family = net.family;
+      const ipv4 = family === "IPv4" || family === 4;
+      if (!ipv4 || net.internal || !isHomeIPv4(net.address)) return;
+      urls.push("http://" + net.address + ":" + port + "/admin");
+    });
+  });
+  return urls;
+}
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Painel neste computador: http://127.0.0.1:" + PORT + "/admin");
+  const urls = lanAdminUrls(PORT);
+  if (!urls.length) console.log("Painel na rede de casa:  nenhum endereço IPv4 encontrado.");
+  urls.forEach((url) => console.log("Painel na rede de casa:  " + url));
   console.log("Prévia do site: http://127.0.0.1:" + PORT + "/");
 });

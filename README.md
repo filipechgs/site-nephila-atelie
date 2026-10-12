@@ -22,9 +22,10 @@ site-nephila/
 │   └── bolsas/rita/rita.md    # texto + fotos da peça
 ├── site.json                  # Marca, bio e contato
 ├── admin/public/              # Painel local
-├── server/index.js            # Express, só neste computador
+├── server/index.js            # Express, na rede de casa
 ├── scripts/
 │   ├── build-data.js          # produtos/ + site.json → js/data.js
+│   ├── publish.js             # mensagem, commit e push das peças
 │   └── migrate.js             # migração única, já aplicada
 ├── docs/arquitetura-produtos.md
 ├── img/                       # Logo, foto da artesã, favicon
@@ -43,15 +44,15 @@ npm install
 npm start
 ```
 
-Abra [http://127.0.0.1:3847/admin](http://127.0.0.1:3847/admin).
+Neste computador, abra [http://127.0.0.1:3847/admin](http://127.0.0.1:3847/admin). Ao iniciar, o console também mostra a URL absoluta da rede de casa (por exemplo `http://192.168.1.20:3847/admin`). Outro aparelho no mesmo Wi-Fi, inclusive o celular, abre o painel por esse endereço. A tela se ajusta ao tamanho do telefone.
 
 1. Crie ou escolha uma categoria (Bolsas, Decoração…). O texto dela aparece no site acima das peças.
 2. Cadastre a peça: nome, descrição, materiais (um por linha), preço em reais e fotos.
 3. As fotos podem ter qualquer nome no computador. Ao salvar, viram `nome-da-peca-0.jpeg`, `nome-da-peca-1.jpeg`…
-4. Clique em **Gerar site**.
-5. Confira em [http://127.0.0.1:3847/](http://127.0.0.1:3847/).
+4. Clique em **Gerar site** e confira em [http://127.0.0.1:3847/](http://127.0.0.1:3847/).
+5. Clique em **Publicar**. O painel mostra a mensagem e os arquivos. **Enviar ao ar** faz o commit e o push para o GitHub Pages.
 
-Para publicar em nephilaatelie.com.br, envie as alterações ao GitHub (`git add`, commit e push). O painel não faz isso.
+**Publicar** envia só `produtos/`, `js/data.js` e `site.json`. Quem edita as pastas à mão pode usar o mesmo botão depois de gerar o site. Se o celular não abrir o painel, permita o Node no Firewall do Windows, na rede privada.
 
 Peças que já estavam no site foram migradas com o preço **Sob consulta** e sem lista de materiais. Abra cada uma no painel para completar.
 
@@ -72,7 +73,7 @@ Dá para fazer sem o painel, desde que a convenção seja respeitada:
 1. Crie `produtos/bolsas/rosa/`.
 2. Escreva `rosa.md` com título, descrição, materiais e preço. O modelo está em [docs/arquitetura-produtos.md](docs/arquitetura-produtos.md).
 3. Coloque as fotos como `rosa-0.jpeg`, `rosa-1.jpeg`.
-4. Rode `npm run build`.
+4. Rode `npm run build`, ou abra o painel e use **Publicar**.
 
 ## Como um agente de IA deve atualizar
 
