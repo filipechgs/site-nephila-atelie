@@ -224,14 +224,32 @@
     });
   }
 
+  function formatTech(value) {
+    const parts = String(value || "").split(",").map((item) => item.trim()).filter(Boolean);
+    return parts.length ? parts.join(" · ") : "Crochê · Macramê";
+  }
+
   function buildCard(p) {
     const article = document.createElement("article");
     article.className = "card reveal";
+    article.tabIndex = 0;
+    article.setAttribute("role", "button");
+    article.setAttribute("aria-label", "Ver " + p.name);
+    article.dataset.product = p.id;
     const photos = Array.isArray(p.photos) ? p.photos.filter(Boolean) : [];
-    const materials = Array.isArray(p.materials) ? p.materials.filter(Boolean) : [];
 
     if (photos.length) {
-      article.appendChild(buildCarousel(photos, p.name));
+      const cover = document.createElement("div");
+      cover.className = "carousel carousel--cover";
+      const slide = document.createElement("div");
+      slide.className = "carousel__slide";
+      const img = document.createElement("img");
+      img.src = photos[0];
+      img.alt = p.name;
+      img.loading = "lazy";
+      slide.appendChild(img);
+      cover.appendChild(slide);
+      article.appendChild(cover);
     } else {
       const empty = document.createElement("div");
       empty.className = "carousel carousel--empty";
@@ -240,36 +258,31 @@
     }
 
     const price = p.price ? '<p class="card__price">' + esc(p.price) + "</p>" : "";
-    const materialsHtml = materials.length
-      ? '<ul class="card__materials" aria-label="Materiais">' +
-        materials.map((item) => "<li>" + esc(item) + "</li>").join("") +
-        "</ul>"
-      : "";
-    const tech = materials.length ? "" : '<span class="card__tech">Crochê · Macramê</span>';
-    const priceNote = p.price ? " (" + p.price + ")" : "";
-
     const body = document.createElement("div");
     body.className = "card__body";
     body.innerHTML =
       '<h3 class="card__name">' + esc(p.name) + "</h3>" +
       price +
       '<p class="card__desc">' + esc(p.desc || "") + "</p>" +
-      materialsHtml +
-      '<div class="card__cta' + (materials.length ? " card__cta--end" : "") + '">' +
-      tech +
-      '<a class="card__ask" target="_blank" rel="noopener" data-wa-produto="' +
-      esc(p.name) +
-      '" href="' +
-      waUrl("Olá, " + D.artisan.firstName + "! Vi o modelo " + p.name + priceNote + " no site Nephila e quero saber mais.") +
-      '">Quero saber mais</a>' +
+      '<div class="card__cta">' +
+      '<span class="card__tech">' + esc(formatTech(p.technique)) + "</span>" +
+      '<span class="card__ask">Quero saber mais</span>' +
       "</div>";
 
     article.appendChild(body);
+    article.addEventListener("click", () => openProduct(p.id));
+    article.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openProduct(p.id);
+      }
+    });
     return article;
   }
 
   /* --- Carrossel --- */
-  function buildCarousel(photos, productName) {
+  function buildCarousel(photos, productName, options) {
+    const opts = options || {};
     const el = document.createElement("div");
     el.className = "carousel";
     el.dataset.label = productName;
@@ -317,20 +330,22 @@
       });
       el.appendChild(dots);
 
-      const thumbs = document.createElement("div");
-      thumbs.className = "carousel__thumbs";
-      photos.forEach((src, i) => {
-        const t = document.createElement("button");
-        t.className = "carousel__thumb" + (i === 0 ? " is-active" : "");
-        t.type = "button";
-        const im = document.createElement("img");
-        im.src = src;
-        im.alt = "";
-        im.loading = "lazy";
-        t.appendChild(im);
-        thumbs.appendChild(t);
-      });
-      el.appendChild(thumbs);
+      if (opts.thumbs !== false) {
+        const thumbs = document.createElement("div");
+        thumbs.className = "carousel__thumbs";
+        photos.forEach((src, i) => {
+          const t = document.createElement("button");
+          t.className = "carousel__thumb" + (i === 0 ? " is-active" : "");
+          t.type = "button";
+          const im = document.createElement("img");
+          im.src = src;
+          im.alt = "";
+          im.loading = "lazy";
+          t.appendChild(im);
+          thumbs.appendChild(t);
+        });
+        el.appendChild(thumbs);
+      }
 
       let index = 0;
       const go = (n) => {
@@ -373,6 +388,71 @@
   }
 
   /* ============================================================
+     MODAL DA PEÇA
+     ============================================================ */
+  const productModal = $("#productModal");
+  const productModalMedia = $("#productModalMedia");
+  let modalReturn = null;
+
+  function closeProduct() {
+    if (!productModal || productModal.hidden) return;
+    productModal.hidden = true;
+    document.body.classList.remove("modal-open");
+    productModalMedia.innerHTML = "";
+    if (modalReturn && modalReturn.focus) modalReturn.focus();
+    modalReturn = null;
+  }
+
+  function openProduct(id) {
+    const product = D.products.find((item) => item.id === id);
+    if (!product || !productModal) return;
+    const photos = Array.isArray(product.photos) ? product.photos.filter(Boolean) : [];
+    const materials = Array.isArray(product.materials) ? product.materials.filter(Boolean) : [];
+    const priceNote = product.price ? " (" + product.price + ")" : "";
+
+    productModalMedia.innerHTML = "";
+    if (photos.length) {
+      productModalMedia.appendChild(buildCarousel(photos, product.name, { thumbs: false }));
+    } else {
+      const empty = document.createElement("div");
+      empty.className = "carousel carousel--empty";
+      empty.textContent = "Foto em breve";
+      productModalMedia.appendChild(empty);
+    }
+
+    $("#productModalTitle").textContent = product.name;
+    const priceEl = $("#productModalPrice");
+    priceEl.textContent = product.price || "";
+    priceEl.hidden = !product.price;
+    $("#productModalDesc").textContent = product.desc || "";
+
+    const list = $("#productModalMaterials");
+    list.innerHTML = materials.map((item) => "<li>" + esc(item) + "</li>").join("");
+    list.hidden = !materials.length;
+
+    $("#productModalTech").textContent = formatTech(product.technique);
+    const order = $("#productModalOrder");
+    order.href = waUrl(
+      "Olá, " + D.artisan.firstName + "! Vi o modelo " + product.name + priceNote +
+      " no site Nephila e quero fazer um pedido."
+    );
+
+    modalReturn = document.activeElement;
+    productModal.hidden = false;
+    document.body.classList.add("modal-open");
+    $("#productModalClose").focus();
+  }
+
+  if (productModal) {
+    productModal.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closeProduct();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeProduct();
+    });
+  }
+
+  /* ============================================================
      CONTATO — links WhatsApp/e-mail + formulário
      ============================================================ */
   const whatMsg = waUrl(D.contact.whatsappMessage);
@@ -382,6 +462,19 @@
   $("#whatsappDisplay").textContent = D.contact.whatsappDisplay;
   $("#canalEmail").href = "mailto:" + D.contact.email;
   $("#emailDisplay").textContent = D.contact.email;
+  function socialLabel(url) {
+    try {
+      const parts = new URL(url).pathname.split("/").filter(Boolean);
+      return parts.length ? parts[parts.length - 1] : url;
+    } catch (err) {
+      return url || "";
+    }
+  }
+
+  $("#canalInstagram").href = D.contact.instagram || "#";
+  $("#instagramDisplay").textContent = socialLabel(D.contact.instagram);
+  $("#canalMercadoLivre").href = D.contact.mercadoLivre || "#";
+  $("#mercadoLivreDisplay").textContent = socialLabel(D.contact.mercadoLivre);
   $("#floatWhatsapp").href = whatMsg;
   $("#exclusivaWhatsapp").href = whatMsg;
   $("#exclusivaWhatsapp").target = "_blank";

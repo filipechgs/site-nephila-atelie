@@ -219,6 +219,8 @@ function renderProductForm() {
     "<p class=\"hint\">Parágrafo que aparece logo abaixo do nome.</p></label>" +
     "<label><span>Materiais</span><textarea name=\"materials\" maxlength=\"2000\" placeholder=\"Fio de algodão&#10;Forro de tecido\">" + esc(materials) + "</textarea>" +
     "<p class=\"hint\">Um material por linha. Pode deixar em branco.</p></label>" +
+    "<label><span>Técnica</span><input name=\"technique\" type=\"text\" maxlength=\"200\" value=\"" + esc(product && product.technique ? product.technique : "") + "\" placeholder=\"Crochê, Macramê\">" +
+    "<p class=\"hint\">Separe por vírgula. No site aparece como Crochê · Macramê. Em branco, fica o padrão Crochê, Macramê.</p></label>" +
     "<label><span>Preço em reais</span><input name=\"price\" type=\"text\" required maxlength=\"60\" value=\"" + esc(product ? product.price : "") + "\" placeholder=\"R$ 180,00\">" +
     "<p class=\"hint\">Como deve aparecer no site. Se ainda não tiver valor, escreva Sob consulta.</p></label>" +
     "<div>" +
@@ -346,6 +348,7 @@ async function saveProduct(form) {
       name: form.name.value,
       desc: form.desc.value,
       materials: form.materials.value.split("\n"),
+      technique: form.technique.value,
       price: form.price.value,
       category: form.category.value
     };

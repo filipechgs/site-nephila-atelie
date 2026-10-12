@@ -287,13 +287,16 @@ ul { list-style: none; margin: 0; padding: 0; }
   box-shadow: var(--shadow-card);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex; flex-direction: column;
+  cursor: pointer;
 }
 .card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px -18px rgba(12, 55, 71, 0.35); }
+.card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 .card__body { padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .card__name { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; color: var(--teal-800); }
 .card__price { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--teal-700); }
 .card__desc { font-size: 0.95rem; color: var(--ink-soft); }
 .card__materials { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; }
+.card__materials[hidden] { display: none; }
 .card__materials li { font-size: 0.82rem; color: var(--teal-700); }
 .card__materials li::before {
   content: "";
@@ -305,10 +308,10 @@ ul { list-style: none; margin: 0; padding: 0; }
   transform: translateY(-1px);
 }
 .card__cta { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.card__cta--end { justify-content: flex-end; }
 .card__tech { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
 .card__ask { font-size: 0.9rem; font-weight: 500; color: var(--teal-800); border-bottom: 1.5px solid var(--gold); padding-bottom: 2px; }
-.card__ask:hover { color: var(--gold); }
+.card:hover .card__ask { color: var(--gold); }
+.carousel--cover .carousel__slide { aspect-ratio: 4 / 4.6; }
 
 /* --- Carrossel --- */
 .carousel { position: relative; background: var(--cream-dark); }
@@ -395,6 +398,9 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 .canal__icone svg { width: 26px; height: 26px; color: #fff; }
 .canal__icone--mail { background: var(--teal-700); border-radius: 12px; }
+.canal__icone--ig { background: #c45c26; }
+.canal__icone--ml { background: #ffe600; }
+.canal__icone--ml svg { color: var(--teal-900); }
 .canal strong { color: var(--teal-800); font-weight: 600; }
 .canal__valor { color: var(--ink-soft); font-size: 0.94rem; }
 
@@ -433,6 +439,72 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 .float-whatsapp svg { width: 28px; height: 28px; }
 .float-whatsapp:hover { transform: scale(1.08); }
+
+body.modal-open { overflow: hidden; }
+.product-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.product-modal[hidden] { display: none; }
+.product-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 31, 42, 0.55);
+}
+.product-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: min(920px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  display: grid;
+  background: var(--cream-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 28px 60px -24px rgba(7, 31, 42, 0.55);
+}
+.product-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(248, 241, 233, 0.94);
+  color: var(--teal-800);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.product-modal__media { background: var(--cream-dark); min-width: 0; }
+.product-modal__body {
+  padding: 22px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.product-modal__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: var(--teal-800);
+  padding-right: 36px;
+}
+.product-modal__desc { color: var(--ink-soft); }
+.product-modal__order { align-self: flex-start; margin-top: 8px; text-decoration: none; }
+
+@media (min-width: 800px) {
+  .product-modal__panel { grid-template-columns: 1.05fr 0.95fr; }
+  .product-modal__media .carousel__slide { aspect-ratio: auto; min-height: 100%; }
+  .product-modal__media .carousel,
+  .product-modal__media .carousel__viewport,
+  .product-modal__media .carousel__slide,
+  .product-modal__media .carousel__slide img { height: 100%; }
+}
 
 /* ---------- Reveal (animação suave ao rolar) ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }

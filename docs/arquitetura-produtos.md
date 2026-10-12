@@ -105,6 +105,8 @@ Bolsa artesanal com acabamento impecável e fios selecionados.
 - Fio de algodão
 - Forro em tecido
 
+Técnica: Crochê, Macramê
+
 R$ 180,00
 ```
 
@@ -113,9 +115,12 @@ R$ 180,00
 | Título `#` | Nome |
 | Primeiro parágrafo | Descrição |
 | Lista com `-` | Materiais (pode ficar de fora) |
+| Parágrafo `Técnica:` | Técnicas, separadas por vírgula. No site viram `Crochê · Macramê` |
 | Último parágrafo | Preço |
 
 Se o preço for só um número, como `180,00`, o painel grava `R$ 180,00`. Texto como `Sob consulta` permanece como foi escrito.
+
+Sem o parágrafo `Técnica:`, o site mostra `Crochê · Macramê`. Ao salvar a peça no painel com o campo vazio, esse padrão é gravado no Markdown.
 
 ## Fotos
 

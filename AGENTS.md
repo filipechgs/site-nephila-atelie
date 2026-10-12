@@ -73,6 +73,7 @@ Cada peça sai assim:
   category: "bolsas",
   desc: "Descrição",
   materials: ["Fio de algodão"],
+  technique: "Crochê, Macramê",
   price: "R$ 180,00",
   photos: ["produtos/bolsas/rita/rita-0.jpeg"]
 }
@@ -86,7 +87,7 @@ Cada peça sai assim:
 2. **Sobre** (`#sobre`) — Biografia da Milena
 3. **Produtos** (`#produtos`) — Filtros + grid de produtos por categoria
 4. **Exclusividade** (`#exclusiva`) — Diferenciais do trabalho artesanal
-5. **Contato** (`#contato`) — WhatsApp, e-mail e formulário
+5. **Contato** (`#contato`) — WhatsApp, e-mail, Instagram, Mercado Livre e formulário
 
 ## Navbar
 
@@ -104,14 +105,14 @@ Cada peça pode ter até 12 fotos. O `main.js` cria automaticamente:
 - Indicadores (dots)
 - Miniaturas (thumbnails)
 
-Se `photos` tem 1 foto, controles são ocultos. O card também mostra preço e, quando existem, os materiais.
+Se `photos` tem 1 foto, controles são ocultos. No card da grade só aparecem a foto, o nome, o preço, a descrição e a técnica. Materiais, carrossel e o botão **Fazer pedido** ficam no modal, aberto ao clicar no card.
 
 ## Contato
 
 - Botão flutuante de WhatsApp (canto inferior direito)
-- Links na seção "Contato" (WhatsApp + e-mail)
+- Links na seção "Contato" (WhatsApp, e-mail, Instagram e Mercado Livre)
 - Formulário que abre WhatsApp com mensagem pré-preenchida
-- CTA "Quero saber mais" em cada card de produto
+- "Quero saber mais" e o clique no card abrem o detalhe da peça; **Fazer pedido** abre o WhatsApp
 
 ## Comandos úteis
 

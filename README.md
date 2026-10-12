@@ -58,7 +58,7 @@ Peças que já estavam no site foram migradas com o preço **Sob consulta** e se
 
 ## Marca, bio e contato
 
-Esses dados ficam em `site.json`. Depois de editar, gere de novo:
+Esses dados ficam em `site.json`, inclusive os links de Instagram e Mercado Livre. Os endereços atuais são placeholders (`seu-perfil`): troque pelas URLs reais e gere de novo.
 
 ```bash
 npm run build

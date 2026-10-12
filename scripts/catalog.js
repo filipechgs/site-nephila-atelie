@@ -141,12 +141,15 @@ function parseCategoryMd(text) {
   return { label, blurb };
 }
 
-function writeProductMd({ name, desc, materials, price }) {
+const DEFAULT_TECHNIQUE = "Crochê, Macramê";
+
+function writeProductMd({ name, desc, materials, technique, price }) {
   const items = (materials || []).map((item) => String(item).trim()).filter(Boolean);
   const parts = ["# " + name.trim(), "", desc.trim(), ""];
   if (items.length) {
     parts.push(items.map((item) => "- " + item).join("\n"), "");
   }
+  parts.push("Técnica: " + (technique || DEFAULT_TECHNIQUE).trim(), "");
   parts.push(price.trim(), "");
   return parts.join("\n");
 }
@@ -166,23 +169,38 @@ function parseProductMd(text) {
   const middle = blocks.slice(1, -1);
   const materials = [];
   const extra = [];
+  let technique = "";
   for (const block of middle) {
     const blockLines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+    const techniqueLine = block.match(/^técnica:\s*(.*)$/i);
     if (blockLines.length && blockLines.every((line) => /^[-*]\s+/.test(line))) {
       materials.push(...blockLines.map((line) => line.replace(/^[-*]\s+/, "").trim()).filter(Boolean));
+    } else if (techniqueLine && blockLines.length === 1) {
+      technique = techniqueLine[1].trim();
     } else {
       extra.push(block);
     }
   }
   const desc = [blocks[0]].concat(extra).join("\n\n").trim();
   if (!desc || !price) throw new Error("A peça precisa de descrição e preço.");
-  return { name, desc, materials, price };
+  return { name, desc, materials, technique, price };
 }
 
 function asMaterials(value) {
   if (Array.isArray(value)) return value.map((item) => String(item));
   if (typeof value === "string") return value.split(/\n/);
   return [];
+}
+
+function normalizeTechnique(value) {
+  const raw = String(value || "").replace(/^técnica:\s*/i, "");
+  const parts = raw.split(",").map((item) => cleanLine(item)).filter(Boolean);
+  if (!parts.length) return DEFAULT_TECHNIQUE;
+  if (parts.length > 8) throw new HttpError(400, "São muitas técnicas. Deixe só as principais.");
+  for (const part of parts) {
+    if (part.length > 40) throw new HttpError(400, "Uma das técnicas está com o texto longo demais.");
+  }
+  return parts.join(", ");
 }
 
 function normalizePrice(value) {
@@ -211,6 +229,7 @@ function normalizeProductInput(input, fallbackCategory) {
   const name = cleanLine(input.name).replace(/^#+\s*/, "");
   const desc = String(input.desc || "").trim().replace(/\n\s*\n/g, "\n").trim();
   const materials = asMaterials(input.materials).map((item) => cleanLine(item)).filter(Boolean);
+  const technique = normalizeTechnique(input.technique);
   const category = cleanLine(input.category || fallbackCategory || "");
   if (!name) throw new HttpError(400, "Dê um nome para a peça.");
   if (name.length > 80) throw new HttpError(400, "O nome da peça está longo demais.");
@@ -227,6 +246,7 @@ function normalizeProductInput(input, fallbackCategory) {
     name,
     desc,
     materials,
+    technique,
     price: normalizePrice(input.price),
     category,
     slug
@@ -310,7 +330,7 @@ function listCatalog() {
       meta = { label: id, blurb: "" };
     }
     const products = (order.products[id] || []).map((slug) => {
-      let parsed = { name: slug, desc: "", materials: [], price: "" };
+      let parsed = { name: slug, desc: "", materials: [], technique: "", price: "" };
       let error = "";
       try {
         parsed = readProduct(id, slug);
@@ -323,6 +343,7 @@ function listCatalog() {
         name: parsed.name,
         desc: parsed.desc,
         materials: parsed.materials,
+        technique: parsed.technique || "",
         price: parsed.price,
         photos: listPhotos(id, slug).map((photo) => ({
           index: photo.index,
@@ -570,6 +591,7 @@ function buildData() {
         category: cat.id,
         desc: product.desc,
         materials: product.materials,
+        technique: product.technique || DEFAULT_TECHNIQUE,
         price: product.price,
         photos: product.photos.map((photo) => photo.src)
       });
