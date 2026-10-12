@@ -122,10 +122,10 @@ ul { list-style: none; margin: 0; padding: 0; }
   inset: 0 0 auto 0;
   z-index: 60;
   height: var(--header-h);
-  background: rgba(248, 241, 233, 0.82);
+  background: rgba(12, 55, 71, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(12, 55, 71, 0.08);
+  border-bottom: 1px solid rgba(248, 241, 233, 0.1);
   transition: box-shadow 0.25s ease;
 }
 .navbar.is-scrolled { box-shadow: var(--shadow-nav); }
@@ -138,7 +138,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 .navbar__toggle span {
   display: block; height: 2px; width: 100%;
-  background: var(--teal-800); border-radius: 2px;
+  background: var(--cream); border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .navbar__toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -149,8 +149,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   position: fixed;
   top: var(--header-h);
   left: 0; right: 0;
-  background: var(--cream-soft);
-  border-bottom: 1px solid rgba(12, 55, 71, 0.1);
+  background: var(--teal-800);
+  border-bottom: 1px solid rgba(248, 241, 233, 0.12);
   box-shadow: var(--shadow-nav);
   padding: 10px 20px 24px;
   transform: translateY(-8px);
@@ -164,8 +164,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 .navbar__links { display: grid; gap: 2px; }
 .navbar__link {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 4px; font-size: 1.05rem; color: var(--teal-800);
-  border-bottom: 1px solid rgba(12, 55, 71, 0.08);
+  padding: 12px 4px; font-size: 1.05rem; color: var(--cream);
+  border-bottom: 1px solid rgba(248, 241, 233, 0.1);
 }
 .navbar__link[aria-current="page"] { color: var(--gold); font-weight: 500; }
 .navbar__caret { transition: transform 0.25s ease; font-size: 0.8em; }
@@ -176,10 +176,16 @@ ul { list-style: none; margin: 0; padding: 0; }
 .navbar__item.has-sub.is-open .navbar__sub { display: block; }
 .navbar__sub a {
   display: block; padding: 10px 6px 10px 16px;
-  color: var(--ink-soft); border-left: 2px solid var(--gold-soft);
+  color: rgba(248, 241, 233, 0.78); border-left: 2px solid var(--gold);
   margin-left: 4px;
 }
 .navbar__cta { margin-top: 14px; }
+.navbar__cta .btn {
+  padding: 0.55rem 1.15rem;
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 16px -8px rgba(205, 165, 80, 0.65);
+}
 
 /* ============================================================
    HERO / INÍCIO
@@ -542,15 +548,15 @@ body.modal-open { overflow: hidden; }
   .navbar__sub {
     display: block; position: absolute; top: calc(100% + 14px); left: 50%;
     transform: translate(-50%, 6px);
-    background: var(--cream-soft); border-radius: var(--radius-md);
+    background: var(--teal-800); border-radius: var(--radius-md);
     box-shadow: var(--shadow-nav); padding: 8px;
-    min-width: 200px; border: 1px solid rgba(12, 55, 71, 0.08);
+    min-width: 200px; border: 1px solid rgba(248, 241, 233, 0.12);
     opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
   }
   .navbar__item.has-sub:hover .navbar__sub,
   .navbar__item.has-sub:focus-within .navbar__sub { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
-  .navbar__sub a { border-left: 0; margin: 0; padding: 10px 14px; border-radius: 10px; }
-  .navbar__sub a:hover { background: var(--gold-soft); color: var(--teal-800); }
+  .navbar__sub a { border-left: 0; margin: 0; padding: 10px 14px; border-radius: 10px; color: var(--cream); }
+  .navbar__sub a:hover { background: rgba(205, 165, 80, 0.18); color: var(--gold-light); }
   .navbar__item.has-sub > .navbar__link { cursor: default; }
   .navbar__caret { display: none; }
 
