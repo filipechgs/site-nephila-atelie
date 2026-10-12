@@ -132,8 +132,11 @@ const SITE = {
       "name": "Flor",
       "category": "bolsas",
       "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
+      "materials": [
+        "Fio de poliéster premium.",
+        "Alça destacável em sintético."
+      ],
+      "technique": "Crochê",
       "price": "Sob consulta",
       "photos": [
         "produtos/bolsas/flor/flor-0.jpeg"
