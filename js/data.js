@@ -121,12 +121,16 @@ const SITE = {
       "id": "lux",
       "name": "Lux",
       "category": "bolsas",
-      "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
-      "price": "Sob consulta",
+      "desc": "Lux é a unidade de medida que indica a iluminância, ou seja, a quantidade de luz que atinge e ilumina efetivamente uma superfície. A Bolsa Lux é aquele acessório para mulheres que gostam de brilhar o suficiente para ser destaque, mas sem causar ofuscamento. Uma bolsa clássica, mas única. Uma junção das duas técnicas, crochê e macramê, para aproveitar o melhor de cada uma.",
+      "materials": [
+        "Fio poliéster com lurex 5mm, forro tricoline, metal de alta qualidade."
+      ],
+      "technique": "Crochê e macramê",
+      "price": "R$ 301,60",
       "photos": [
-        "produtos/bolsas/lux/lux-0.jpeg"
+        "produtos/bolsas/lux/lux-0.jpeg",
+        "produtos/bolsas/lux/lux-1.jpeg",
+        "produtos/bolsas/lux/lux-2.jpeg"
       ]
     },
     {
