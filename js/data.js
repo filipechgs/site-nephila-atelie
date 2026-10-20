@@ -180,24 +180,15 @@ const SITE = {
       "id": "trio",
       "name": "Trio",
       "category": "bolsas",
-      "desc": "Conjunto artesanal que une praticidade e charme em cada detalhe.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
+      "desc": "Trio é aquele tipo de bolsa que se destaca apenas por ser. Uma combinação de 3 cores de corda que formam um efeito de degradê, alça de mão embutida e alça regulável de opção. Pode ser feita em tamanho compacto (20x20cm), ou maior (32x20cm), sendo uma peça versátil para qualquer ocasião.",
+      "materials": [
+        "Corda náutica 2,5mm em 3 cores. Forro removível. Alça regulável em sintético opcional."
+      ],
+      "technique": "Macramê",
       "price": "Sob consulta",
       "photos": [
-        "produtos/bolsas/trio/trio-0.jpeg"
-      ]
-    },
-    {
-      "id": "novo-modelo",
-      "name": "Novo modelo",
-      "category": "bolsas",
-      "desc": "Peça artesanal em crochê ou macramê. Edite o nome e a descrição aqui.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
-      "price": "Sob consulta",
-      "photos": [
-        "produtos/bolsas/novo-modelo/novo-modelo-0.jpeg"
+        "produtos/bolsas/trio/trio-0.jpeg",
+        "produtos/bolsas/trio/trio-1.jpeg"
       ]
     },
     {
