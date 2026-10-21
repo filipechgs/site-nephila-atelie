@@ -84,8 +84,8 @@ Cada peça sai assim:
 ## Seções da página (ordem no HTML)
 
 1. **Início** (`#inicio`) — Hero com logo e tagline
-2. **Sobre** (`#sobre`) — Biografia da Milena
-3. **Produtos** (`#produtos`) — Filtros + grid de produtos por categoria
+2. **Produtos** (`#produtos`) — Filtros + grid de produtos por categoria
+3. **Sobre** (`#sobre`) — Biografia da Milena
 4. **Exclusividade** (`#exclusiva`) — Diferenciais do trabalho artesanal
 5. **Contato** (`#contato`) — WhatsApp, e-mail, Instagram, Mercado Livre e formulário
 

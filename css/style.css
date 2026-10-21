@@ -265,7 +265,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 /* ============================================================
    PRODUTOS
    ============================================================ */
-.produtos { padding: 76px 0 90px; }
+.produtos { padding: 76px 0 90px; background: var(--cream-dark); }
 .produtos__head { text-align: center; max-width: 60ch; margin-inline: auto; }
 .produtos__intro { color: var(--ink-soft); margin-top: 8px; }
 

@@ -167,7 +167,6 @@
 
     const links = [
       { label: siteText("navInicio", "Início"), href: "#inicio" },
-      { label: siteText("navSobre", "Sobre"), href: "#sobre" },
       {
         label: siteText("navProdutos", "Produtos"),
         sub: [].concat(
@@ -175,6 +174,7 @@
           D.categories.map((c) => ({ label: c.label, href: "#cat-" + c.id, filter: c.id }))
         )
       },
+      { label: siteText("navSobre", "Sobre"), href: "#sobre" },
       { label: siteText("navExclusiva", "Exclusividade"), href: "#exclusiva" },
       { label: siteText("navContato", "Contato"), href: "#contato" }
     ];
@@ -637,7 +637,7 @@
   $$(".reveal").forEach((el) => io.observe(el));
 
   /* Scrollspy — destaca a seção ativa na navbar */
-  const sectionIds = ["inicio", "sobre", "produtos", "exclusiva", "contato"].map((id) => document.getElementById(id));
+  const sectionIds = ["inicio", "produtos", "sobre", "exclusiva", "contato"].map((id) => document.getElementById(id));
   const spy = () => {
     const mid = window.innerHeight * 0.4;
     let current = null;
