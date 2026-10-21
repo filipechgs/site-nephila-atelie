@@ -360,17 +360,16 @@
     const photos = Array.isArray(p.photos) ? p.photos.filter(Boolean) : [];
 
     if (photos.length) {
-      const cover = document.createElement("div");
-      cover.className = "carousel carousel--cover";
-      const slide = document.createElement("div");
-      slide.className = "carousel__slide";
+      const frame = document.createElement("div");
+      frame.className = "card__photos";
       const img = document.createElement("img");
+      img.className = "card__photo is-on";
       img.src = photos[0];
       img.alt = p.name;
       img.loading = "lazy";
-      slide.appendChild(img);
-      cover.appendChild(slide);
-      article.appendChild(cover);
+      frame.appendChild(img);
+      article.appendChild(frame);
+      if (photos.length > 1) bindCoverHover(article, frame, photos);
     } else {
       const empty = document.createElement("div");
       empty.className = "carousel carousel--empty";
@@ -399,6 +398,85 @@
       }
     });
     return article;
+  }
+
+  /* A próxima foto surge por cima da capa enquanto o ponteiro está no card. */
+  function bindCoverHover(article, frame, photos) {
+    const imgs = [frame.firstElementChild];
+    let index = 0;
+    let timer = 0;
+    let ready = false;
+    let token = 0;
+
+    function ensure() {
+      if (ready) return;
+      ready = true;
+      photos.slice(1).forEach((src) => {
+        const img = document.createElement("img");
+        img.className = "card__photo";
+        img.alt = "";
+        img.decoding = "async";
+        img.src = src;
+        frame.appendChild(img);
+        imgs.push(img);
+      });
+    }
+
+    function whenReady(img, done) {
+      if (img.complete && img.naturalWidth) done();
+      else img.addEventListener("load", done, { once: true });
+    }
+
+    function show(n) {
+      ensure();
+      n = (n + imgs.length) % imgs.length;
+      if (n === index) return;
+      const step = ++token;
+      const next = imgs[n];
+      whenReady(next, () => {
+        if (step !== token || n === index) return;
+        imgs.forEach((img) => {
+          if (img.classList.contains("is-on")) img.style.zIndex = "1";
+        });
+        next.style.zIndex = "2";
+        next.classList.add("is-on");
+        index = n;
+        window.setTimeout(() => {
+          if (step !== token || index !== n) return;
+          imgs.forEach((img, i) => {
+            const on = i === n;
+            img.classList.toggle("is-on", on);
+            img.style.zIndex = on ? "1" : "";
+          });
+        }, 720);
+      });
+    }
+
+    function cover() {
+      window.clearInterval(timer);
+      timer = 0;
+      token += 1;
+      if (!ready || index === 0) return;
+      imgs.forEach((img, i) => {
+        if (i === 0) {
+          img.classList.add("is-on");
+          img.style.zIndex = "1";
+        } else {
+          img.style.zIndex = "2";
+          img.classList.remove("is-on");
+        }
+      });
+      index = 0;
+    }
+
+    article.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "touch") return;
+      if (timer) return;
+      show(index + 1);
+      if (photos.length > 2) timer = window.setInterval(() => show(index + 1), 1800);
+    });
+    article.addEventListener("pointerleave", cover);
+    article.addEventListener("click", cover);
   }
 
   /* --- Carrossel --- */
@@ -436,8 +514,8 @@
     next.type = "button";
     next.innerHTML = "&#8250;";
     next.setAttribute("aria-label", "Próxima foto de " + productName);
-    el.appendChild(prev);
-    el.appendChild(next);
+    viewport.appendChild(prev);
+    viewport.appendChild(next);
 
     if (photos.length > 1) {
       const dots = document.createElement("div");
@@ -454,10 +532,14 @@
       if (opts.thumbs !== false) {
         const thumbs = document.createElement("div");
         thumbs.className = "carousel__thumbs";
+        thumbs.setAttribute("role", "group");
+        thumbs.setAttribute("aria-label", "Fotos de " + productName);
         photos.forEach((src, i) => {
           const t = document.createElement("button");
           t.className = "carousel__thumb" + (i === 0 ? " is-active" : "");
           t.type = "button";
+          t.setAttribute("aria-label", "Foto " + (i + 1) + " de " + photos.length);
+          t.setAttribute("aria-pressed", i === 0 ? "true" : "false");
           const im = document.createElement("img");
           im.src = src;
           im.alt = "";
@@ -473,7 +555,16 @@
         index = (n + photos.length) % photos.length;
         track.style.transform = "translateX(-" + index * 100 + "%)";
         $$(".carousel__dot", el).forEach((d, i) => d.classList.toggle("is-active", i === index));
-        $$(".carousel__thumb", el).forEach((t, i) => t.classList.toggle("is-active", i === index));
+        $$(".carousel__thumb", el).forEach((t, i) => {
+          const on = i === index;
+          t.classList.toggle("is-active", on);
+          t.setAttribute("aria-pressed", on ? "true" : "false");
+          if (on && t.parentElement) {
+            const scroller = t.parentElement;
+            const left = t.offsetLeft - (scroller.clientWidth - t.offsetWidth) / 2;
+            scroller.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+          }
+        });
       };
       prev.addEventListener("click", () => go(index - 1));
       next.addEventListener("click", () => go(index + 1));
@@ -533,7 +624,7 @@
 
     productModalMedia.innerHTML = "";
     if (photos.length) {
-      productModalMedia.appendChild(buildCarousel(photos, product.name, { thumbs: false }));
+      productModalMedia.appendChild(buildCarousel(photos, product.name));
     } else {
       const empty = document.createElement("div");
       empty.className = "carousel carousel--empty";
