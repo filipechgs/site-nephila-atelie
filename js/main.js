@@ -20,12 +20,133 @@
   const waUrl = (msg) =>
     "https://wa.me/" + D.contact.whatsappNumber + "?text=" + encodeURIComponent(msg);
   const catOf = (id) => D.categories.find((c) => c.id === id);
+  const copy = D.copy || {};
 
-  /* ---------------- <head> básico ---------------- */
-  document.title = D.brand + " · Crochê & Macramê artesanal por " + D.artisan.firstName;
+  function siteText(key, fallback) {
+    return copy[key] || fallback;
+  }
 
-  /* ---------------- Hero ---------------- */
-  $("#heroArtisan").textContent = D.artisan.name;
+  function rich(value) {
+    return esc(value)
+      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*\n]+)\*/g, "<em>$1</em>")
+      .replace(/\n/g, "<br>");
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el && value) el.textContent = value;
+  }
+
+  function setRich(id, value) {
+    const el = document.getElementById(id);
+    if (el && value) el.innerHTML = rich(value);
+  }
+
+  function setMeta(selector, value) {
+    const el = document.querySelector(selector);
+    if (el && value) el.setAttribute("content", value);
+  }
+
+  function applySite() {
+    document.title = siteText("seoTitle", D.brand + " · Crochê & Macramê artesanal por " + D.artisan.firstName);
+    setMeta('meta[name="description"]', copy.seoDescription);
+    setMeta('meta[name="keywords"]', copy.seoKeywords);
+    setMeta('meta[name="author"]', D.artisan.name + " · " + D.brand);
+    setMeta('meta[property="og:title"]', copy.seoTitle);
+    setMeta('meta[property="og:description"]', copy.seoShare);
+    setMeta('meta[property="og:site_name"]', D.brand);
+    setMeta('meta[name="twitter:title"]', copy.seoTitle);
+    setMeta('meta[name="twitter:description"]', copy.seoShare);
+
+    const brandLink = document.querySelector(".navbar__brand");
+    if (brandLink && D.brand) brandLink.setAttribute("aria-label", D.brand + " – voltar ao início");
+    const logo = document.querySelector(".navbar__logo");
+    if (logo && D.brand) logo.alt = "Logo " + D.brand;
+
+    setText("heroEyebrow", copy.heroEyebrow);
+    setRich("heroTitle", copy.heroTitle);
+    setRich("heroCopy", copy.heroCopy);
+    setText("heroPrimary", copy.heroPrimary);
+    setText("heroSecondary", copy.heroSecondary);
+
+    const photo = document.getElementById("aboutPhoto");
+    if (photo && D.artisan.photo) {
+      photo.src = D.artisan.photo + (D.artisan.photoVersion ? "?v=" + D.artisan.photoVersion : "");
+      photo.alt = D.artisan.name + ", artesã da " + D.brand;
+    }
+    setText("aboutEyebrow", copy.aboutEyebrow);
+    setRich("aboutTitle", copy.aboutTitle);
+    const tags = document.getElementById("aboutTags");
+    if (tags && Array.isArray(copy.aboutTags) && copy.aboutTags.length) {
+      tags.innerHTML = copy.aboutTags.map((tag) => '<span class="tag">' + esc(tag) + "</span>").join("");
+    }
+
+    setText("productsEyebrow", copy.productsEyebrow);
+    setRich("productsTitle", copy.productsTitle);
+    setText("productsIntro", copy.productsIntro);
+
+    setText("exclusiveEyebrow", copy.exclusiveEyebrow);
+    setRich("exclusiveTitle", copy.exclusiveTitle);
+    setRich("exclusiveLead", copy.exclusiveLead);
+    setRich("exclusiveCta", copy.exclusiveCta);
+    setText("exclusivaWhatsapp", copy.exclusiveWhatsapp);
+    setText("exclusivaEmail", copy.exclusiveEmail);
+    if (Array.isArray(copy.exclusiveCards)) {
+      $$("#exclusiveGrid .card-excl").forEach((card, index) => {
+        const item = copy.exclusiveCards[index];
+        if (!item) return;
+        const title = card.querySelector("h3");
+        const text = card.querySelector("p");
+        if (title && item.title) title.textContent = item.title;
+        if (text && item.text) text.textContent = item.text;
+      });
+    }
+
+    setText("contactEyebrow", copy.contactEyebrow);
+    setRich("contactTitle", copy.contactTitle);
+    setText("contactIntro", copy.contactIntro);
+    setText("formNameLabel", copy.formNameLabel);
+    setText("formMessageLabel", copy.formMessageLabel);
+    setText("formSubmit", copy.formSubmit);
+    setText("formHint", copy.formHint);
+    const nameField = document.getElementById("formNome");
+    const messageField = document.getElementById("formMensagem");
+    if (nameField && copy.formNamePlaceholder) nameField.placeholder = copy.formNamePlaceholder;
+    if (messageField && copy.formMessagePlaceholder) messageField.placeholder = copy.formMessagePlaceholder;
+    setText("footerCredit", copy.footerCredit);
+    const floatButton = document.getElementById("floatWhatsapp");
+    if (floatButton && copy.floatLabel) floatButton.setAttribute("aria-label", copy.floatLabel);
+
+    const dataNode = document.querySelector('script[type="application/ld+json"]');
+    if (dataNode) {
+      try {
+        const data = JSON.parse(dataNode.textContent);
+        (data["@graph"] || []).forEach((item) => {
+          if (item["@type"] === "WebSite") {
+            item.name = D.brand;
+            if (copy.seoDescription) item.description = copy.seoDescription;
+          }
+          if (item["@type"] === "LocalBusiness") {
+            item.name = D.brand;
+            item.email = D.contact.email;
+            item.telephone = "+" + D.contact.whatsappNumber;
+            if (copy.seoDescription) item.description = copy.seoDescription;
+            if (item.founder) {
+              item.founder.name = D.artisan.name;
+              item.founder.jobTitle = D.artisan.role;
+              if (D.artisan.photo) item.founder.image = "https://nephilaatelie.com.br/" + D.artisan.photo;
+            }
+          }
+        });
+        dataNode.textContent = JSON.stringify(data);
+      } catch (err) {
+        /* mantém o JSON-LD que já está na página */
+      }
+    }
+  }
+
+  applySite();
 
   /* ---------------- Sobre ---------------- */
   const sobreBio = $("#sobreBio");
@@ -45,17 +166,17 @@
     const btnWhats = waUrl(D.contact.whatsappMessage);
 
     const links = [
-      { label: "Início", href: "#inicio" },
-      { label: "Sobre", href: "#sobre" },
+      { label: siteText("navInicio", "Início"), href: "#inicio" },
+      { label: siteText("navSobre", "Sobre"), href: "#sobre" },
       {
-        label: "Produtos",
+        label: siteText("navProdutos", "Produtos"),
         sub: [].concat(
-          [{ label: "Todas as peças", href: "#produtos" }],
+          [{ label: siteText("navTodas", "Todas as peças"), href: "#produtos" }],
           D.categories.map((c) => ({ label: c.label, href: "#cat-" + c.id, filter: c.id }))
         )
       },
-      { label: "Exclusividade", href: "#exclusiva" },
-      { label: "Contato", href: "#contato" }
+      { label: siteText("navExclusiva", "Exclusividade"), href: "#exclusiva" },
+      { label: siteText("navContato", "Contato"), href: "#contato" }
     ];
 
     const ul = document.createElement("ul");
@@ -118,7 +239,7 @@
     cta.className = "btn btn--gold";
     cta.target = "_blank";
     cta.rel = "noopener";
-    cta.textContent = "Pedir uma peça";
+    cta.textContent = siteText("navCta", "Pedir uma peça");
     ctaLi.appendChild(cta);
     ul.appendChild(ctaLi);
 
@@ -169,7 +290,7 @@
   const categoriasEl = $("#categorias");
 
   function buildFiltros() {
-    const pills = [{ id: "todas", label: "Todos" }].concat(
+    const pills = [{ id: "todas", label: siteText("filterAll", "Todos") }].concat(
       D.categories.map((c) => ({ id: c.id, label: c.label }))
     );
     pills.forEach((p) => {
@@ -194,7 +315,7 @@
       if (!items.length) {
         const empty = document.createElement("p");
         empty.className = "cat__blurb";
-        empty.textContent = "Em breve, novas peças artesanais por aqui.";
+        empty.textContent = siteText("emptyCategory", "Em breve, novas peças artesanais por aqui.");
         sec.appendChild(empty);
       }
 
@@ -253,7 +374,7 @@
     } else {
       const empty = document.createElement("div");
       empty.className = "carousel carousel--empty";
-      empty.textContent = "Foto em breve";
+      empty.textContent = siteText("emptyPhoto", "Foto em breve");
       article.appendChild(empty);
     }
 
@@ -266,7 +387,7 @@
       '<p class="card__desc">' + esc(p.desc || "") + "</p>" +
       '<div class="card__cta">' +
       '<span class="card__tech">' + esc(formatTech(p.technique)) + "</span>" +
-      '<span class="card__ask">Quero saber mais</span>' +
+      '<span class="card__ask">' + esc(siteText("cardAsk", "Quero saber mais")) + "</span>" +
       "</div>";
 
     article.appendChild(body);
@@ -416,7 +537,7 @@
     } else {
       const empty = document.createElement("div");
       empty.className = "carousel carousel--empty";
-      empty.textContent = "Foto em breve";
+      empty.textContent = siteText("emptyPhoto", "Foto em breve");
       productModalMedia.appendChild(empty);
     }
 
@@ -432,6 +553,7 @@
 
     $("#productModalTech").textContent = formatTech(product.technique);
     const order = $("#productModalOrder");
+    order.textContent = siteText("orderButton", "Fazer pedido");
     order.href = waUrl(
       "Olá, " + D.artisan.firstName + "! Vi o modelo " + product.name + priceNote +
       " no site Nephila e quero fazer um pedido."

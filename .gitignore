@@ -9,3 +9,7 @@ img/*.zip
 Thumbs.db
 .DS_Store
 node_modules/
+
+# Painel em um clique (gerado com npm run exe)
+atualizacao-nephila.exe
+scripts/.sea/

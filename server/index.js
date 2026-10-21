@@ -6,6 +6,7 @@ const express = require("express");
 const multer = require("multer");
 const catalog = require("../scripts/catalog");
 const publisher = require("../scripts/publish");
+const siteContent = require("../scripts/site-content");
 
 const PORT = Number(process.env.PORT) || 3847;
 const ROOT = catalog.ROOT;
@@ -110,6 +111,22 @@ app.post("/api/build", route(() => {
   return Object.assign({ ok: true }, result);
 }));
 
+app.get("/api/site", route(() => ({ fields: siteContent.toFields(siteContent.readSite()) })));
+
+app.patch("/api/site", route((req) => ({ fields: siteContent.updateSite(req.body || {}) })));
+
+app.post("/api/site/photo", (req, res) => {
+  upload.single("photo")(req, res, (err) => {
+    const message = uploadError(err);
+    if (message) return res.status(400).json({ error: message });
+    try {
+      res.json({ fields: siteContent.savePhoto(req.file) });
+    } catch (error) {
+      sendError(res, error);
+    }
+  });
+});
+
 app.get("/api/publish/pending", route(() => publisher.pending()));
 
 app.post("/api/publish/preview", route(() => publisher.preview()));
@@ -148,24 +165,156 @@ function isHomeIPv4(address) {
   return false;
 }
 
-function lanAdminUrls(port) {
+function isVirtualAdapter(name) {
+  return /vmware|virtualbox|vbox|hyper-v|vethernet|wsl|loopback|bluetooth|tunnel|npcap|zerotier|tailscale|vpn|pseudo|virtual/i.test(name);
+}
+
+function homeAdminUrls(port, skipVirtual) {
   const urls = [];
   const nets = os.networkInterfaces();
   Object.keys(nets).forEach((name) => {
+    if (skipVirtual && isVirtualAdapter(name)) return;
     (nets[name] || []).forEach((net) => {
       const family = net.family;
       const ipv4 = family === "IPv4" || family === 4;
       if (!ipv4 || net.internal || !isHomeIPv4(net.address)) return;
-      urls.push("http://" + net.address + ":" + port + "/admin");
+      const url = "http://" + net.address + ":" + port + "/admin";
+      if (urls.indexOf(url) === -1) urls.push(url);
     });
   });
   return urls;
 }
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("Painel neste computador: http://127.0.0.1:" + PORT + "/admin");
-  const urls = lanAdminUrls(PORT);
+function waitToClose() {
+  if (!process.stdin.isTTY) process.exit(1);
+  console.log("");
+  console.log("Aperte Enter para fechar esta janela.");
+  const readline = require("readline");
+  const input = readline.createInterface({ input: process.stdin, output: process.stdout });
+  input.question("", () => process.exit(1));
+}
+
+function printLauncherHelp(port) {
+  const here = "http://127.0.0.1:" + port + "/admin";
+  const phones = homeAdminUrls(port, true);
+  const lines = [
+    "",
+    "========================================",
+    "",
+    "  Nephila",
+    "  Atualizar as peças",
+    "",
+    "========================================",
+    "",
+    "Deixe esta janela aberta.",
+    "Enquanto ela estiver aberta, dá para",
+    "atualizar as peças.",
+    "",
+    "Para parar, feche esta janela.",
+    "",
+    "----------------------------------------",
+    "No computador",
+    "----------------------------------------",
+    "",
+    "1. Abra o Chrome.",
+    "   É o programa colorido de entrar",
+    "   na internet. Se você usa outro,",
+    "   pode abrir esse.",
+    "",
+    "2. Clique na barra do topo, onde fica",
+    "   o endereço do site.",
+    "",
+    "   Não escreva na caixa do Google,",
+    "   no meio da página.",
+    "",
+    "3. Apague o que estiver escrito,",
+    "   digite o endereço abaixo igualzinho",
+    "   e aperte Enter:",
+    "",
+    "   " + here,
+    "",
+    "----------------------------------------",
+    "No celular",
+    "----------------------------------------",
+    "",
+    "O celular precisa estar no mesmo Wi-Fi",
+    "deste computador. A internet do chip",
+    "(4G ou 5G) não serve.",
+    ""
+  ];
+  if (!phones.length) {
+    lines.push("Não encontrei o endereço do celular.");
+    lines.push("Dá para atualizar neste computador,");
+    lines.push("no endereço de cima.");
+    lines.push("Confira se o Wi-Fi do computador");
+    lines.push("está ligado.");
+  } else {
+    lines.push("1. Abra o Chrome no celular.");
+    lines.push("");
+    lines.push("2. Toque na barra de cima.");
+    lines.push("");
+    lines.push("3. Apague o que estiver escrito");
+    lines.push("   e digite o endereço abaixo");
+    lines.push("   igualzinho, com os pontos");
+    lines.push("   e os dois-pontos:");
+    lines.push("");
+    phones.forEach((url) => {
+      lines.push("   " + url);
+      lines.push("");
+    });
+    if (phones.length > 1) {
+      lines.push("Se o primeiro não abrir, tente o outro.");
+      lines.push("");
+    }
+    lines.push("Se a página não abrir, confira se o");
+    lines.push("celular está no mesmo Wi-Fi e digite");
+    lines.push("de novo, com calma.");
+  }
+  lines.push("");
+  lines.push("Se o Windows perguntar se este programa");
+  lines.push("pode usar a rede, clique em Permitir.");
+  lines.push("");
+  console.log(lines.join("\n"));
+}
+
+function printDeveloperHelp(port) {
+  console.log("Painel neste computador: http://127.0.0.1:" + port + "/admin");
+  const urls = homeAdminUrls(port, false);
   if (!urls.length) console.log("Painel na rede de casa:  nenhum endereço IPv4 encontrado.");
   urls.forEach((url) => console.log("Painel na rede de casa:  " + url));
-  console.log("Prévia do site: http://127.0.0.1:" + PORT + "/");
-});
+  console.log("Prévia do site: http://127.0.0.1:" + port + "/");
+}
+
+function startPanel() {
+  const server = app.listen(PORT, "0.0.0.0", () => {
+    if (process.env.NEPHILA_LAUNCHER === "1") printLauncherHelp(PORT);
+    else printDeveloperHelp(PORT);
+  });
+  server.on("error", (err) => {
+    if (process.env.NEPHILA_LAUNCHER === "1") {
+      console.log("");
+      if (err.code === "EADDRINUSE") {
+        console.log("O painel já está aberto em outra janela.");
+        console.log("Procure a outra janela da Nephila e use");
+        console.log("os endereços que aparecem nela.");
+        console.log("");
+        console.log("Se não achar essa janela, feche todas");
+        console.log("as janelas pretas e abra este programa");
+        console.log("de novo.");
+      } else {
+        console.log("Não consegui abrir o painel.");
+        console.log("Pode fechar esta janela e pedir ajuda em casa.");
+      }
+      waitToClose();
+      return;
+    }
+    if (err.code === "EADDRINUSE") {
+      console.error("O painel já está aberto na porta " + PORT + ".");
+      process.exit(1);
+    }
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+if (require.main === module || process.env.NEPHILA_LAUNCHER === "1") startPanel();

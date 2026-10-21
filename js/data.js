@@ -1,7 +1,7 @@
 /*
  * GERADO por scripts/build-data.js — não edite este arquivo à mão.
  * Peças e categorias: pasta produtos/ (painel: npm start).
- * Marca, artesã e contato: site.json
+ * Textos, foto da Milena, marca e contato: site.json
  */
 const SITE = {
   "brand": "Nephila",
@@ -12,7 +12,9 @@ const SITE = {
     "bio": [
       "Cada peça Nephila nasce nas mãos de Milena, linha por linha, nó por nó.",
       "O nome vem da aranha Nephila, que tece fios de seda dourada e resistente. É assim que Milena tece: tramas delicadas, feitas para durar."
-    ]
+    ],
+    "photo": "img/milena.jpeg",
+    "photoVersion": "1789944680232.0571"
   },
   "contact": {
     "whatsappNumber": "5571993044037",
@@ -21,6 +23,70 @@ const SITE = {
     "email": "milena@nephila.com.br",
     "instagram": "https://instagram.com/seu-perfil",
     "mercadoLivre": "https://www.mercadolivre.com.br/perfil/seu-perfil"
+  },
+  "copy": {
+    "seoTitle": "Nephila · Crochê & Macramê artesanal por Milena",
+    "seoDescription": "Nephila — peças artesanais em crochê e macramê por Milena. Bolsas, decoração e acessórios feitos à mão, exclusivos e únicos.",
+    "seoShare": "Peças artesanais em crochê e macramê: bolsas, decoração e acessórios feitos à mão, exclusivos e únicos.",
+    "seoKeywords": "Nephila, crochê, macramê, bolsas artesanais, decoração artesanal, acessórios feitos à mão, Milena, ateliê",
+    "navInicio": "Início",
+    "navSobre": "Sobre",
+    "navProdutos": "Produtos",
+    "navTodas": "Todas as peças",
+    "navExclusiva": "Exclusividade",
+    "navContato": "Contato",
+    "navCta": "Pedir uma peça",
+    "heroEyebrow": "crochê · macramê · feito à mão",
+    "heroTitle": "arte em cada linha,\nnó por nó",
+    "heroCopy": "Peças exclusivas tecidas por **Milena**, da primeira laçada ao último detalhe. Cada Nephila é única — como quem a usa.",
+    "heroPrimary": "Ver bolsas",
+    "heroSecondary": "Pedir uma peça",
+    "aboutEyebrow": "a artesã",
+    "aboutTitle": "Por trás de cada peça,\nas mãos da *Milena*.",
+    "productsEyebrow": "ateliê",
+    "productsTitle": "Peças que carregam história",
+    "productsIntro": "Bolsas, decoração e acessórios tecidos à mão. Toque numa peça para conhecê-la — disponibilidade e medidas são combinadas direto com a artesã.",
+    "filterAll": "Todos",
+    "cardAsk": "Quero saber mais",
+    "orderButton": "Fazer pedido",
+    "emptyCategory": "Em breve, novas peças artesanais por aqui.",
+    "emptyPhoto": "Foto em breve",
+    "exclusiveEyebrow": "trabalho artesanal",
+    "exclusiveTitle": "Nada de prateleira.\nNada de duas iguais.",
+    "exclusiveLead": "Cada Nephila é produzida para ser **única**: o textura, o caimento e o acabamento variam a cada peça — é a assinatura do feito à mão.",
+    "exclusiveCta": "Quer uma peça exclusiva ou saber a disponibilidade de uma bolsa?\n**Fale direto com Milena:**",
+    "exclusiveWhatsapp": "WhatsApp",
+    "exclusiveEmail": "E-mail",
+    "contactEyebrow": "conversar com a artesã",
+    "contactTitle": "Encomende ou tire dúvidas",
+    "contactIntro": "Disponibilidade, valores e entrega são sempre combinados direto com a Milena. É só chamar no canal que preferir — ela responde com carinho.",
+    "formNameLabel": "Seu nome",
+    "formNamePlaceholder": "Como podemos te chamar?",
+    "formMessageLabel": "Mensagem",
+    "formMessagePlaceholder": "Olá, Milena! Gostaria de saber a disponibilidade de…",
+    "formSubmit": "Enviar pelo WhatsApp",
+    "formHint": "O formulário abre uma conversa no WhatsApp com a mensagem pronta para enviar.",
+    "footerCredit": "Nephila · Crochê & Macramê · Feito à mão pela Milena",
+    "floatLabel": "Conversar com Milena no WhatsApp",
+    "aboutTags": [
+      "Peça única",
+      "Feita à mão",
+      "Fios selecionados"
+    ],
+    "exclusiveCards": [
+      {
+        "title": "Peça única",
+        "text": "Nenhuma bolsa sai do tear igual à anterior. Você leva algo só seu."
+      },
+      {
+        "title": "Sob encomenda",
+        "text": "Produção sob demanda: a peça é feita pensando no seu gosto."
+      },
+      {
+        "title": "Atendimento direto",
+        "text": "Disponibilidade, medidas e prazos são combinados diretamente com a artesã."
+      }
+    ]
   },
   "categories": [
     {

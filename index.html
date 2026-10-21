@@ -115,15 +115,15 @@
         </div>
         <div class="hero__body">
           <div class="hero__text">
-            <p class="eyebrow">crochê · macramê · feito à mão</p>
-            <h1 class="hero__title">arte em cada linha,<br>nó por nó</h1>
-            <p class="hero__copy">
-              Peças exclusivas tecidas por <strong id="heroArtisan">Milena</strong>, da primeira
+            <p class="eyebrow" id="heroEyebrow">crochê · macramê · feito à mão</p>
+            <h1 class="hero__title" id="heroTitle">arte em cada linha,<br>nó por nó</h1>
+            <p class="hero__copy" id="heroCopy">
+              Peças exclusivas tecidas por <strong>Milena</strong>, da primeira
               laçada ao último detalhe. Cada Nephila é única — como quem a usa.
             </p>
             <div class="hero__ctas">
-              <a class="btn btn--gold" href="#produtos">Ver bolsas</a>
-              <a class="btn btn--ghost" href="#contato">Pedir uma peça</a>
+              <a class="btn btn--gold" id="heroPrimary" href="#produtos">Ver bolsas</a>
+              <a class="btn btn--ghost" id="heroSecondary" href="#contato">Pedir uma peça</a>
             </div>
           </div>
         </div>
@@ -139,14 +139,14 @@
         <div class="sobre__grid">
           <div class="sobre__media">
             <div class="sobre__frame" id="sobreFrame">
-              <img src="img/milena.jpeg" alt="Milena, artesã da Nephila" loading="lazy">
+              <img id="aboutPhoto" src="img/milena.jpeg" alt="Milena, artesã da Nephila" loading="lazy">
             </div>
           </div>
           <div class="sobre__text">
-            <p class="eyebrow">a artesã</p>
-            <h2 class="section-title">Por trás de cada peça,<br>as mãos da <em>Milena</em>.</h2>
+            <p class="eyebrow" id="aboutEyebrow">a artesã</p>
+            <h2 class="section-title" id="aboutTitle">Por trás de cada peça,<br>as mãos da <em>Milena</em>.</h2>
             <div id="sobreBio"><!-- injetado por JS --></div>
-            <div class="sobre__tags">
+            <div class="sobre__tags" id="aboutTags">
               <span class="tag">Peça única</span>
               <span class="tag">Feita à mão</span>
               <span class="tag">Fios selecionados</span>
@@ -160,9 +160,9 @@
     <section class="produtos" id="produtos">
       <div class="container">
         <header class="produtos__head">
-          <p class="eyebrow">ateliê</p>
-          <h2 class="section-title">Peças que carregam história</h2>
-          <p class="produtos__intro">
+          <p class="eyebrow" id="productsEyebrow">ateliê</p>
+          <h2 class="section-title" id="productsTitle">Peças que carregam história</h2>
+          <p class="produtos__intro" id="productsIntro">
             Bolsas, decoração e acessórios tecidos à mão. Toque numa peça para
             conhecê-la — disponibilidade e medidas são combinadas direto com a artesã.
           </p>
@@ -175,13 +175,13 @@
     <!-- ================= EXCLUSIVIDADE ================= -->
     <section class="exclusiva" id="exclusiva">
       <div class="container">
-        <p class="eyebrow eyebrow--gold">trabalho artesanal</p>
-        <h2 class="section-title section-title--light">Nada de prateleira.<br>Nada de duas iguais.</h2>
-        <p class="exclusiva__lead">
+        <p class="eyebrow eyebrow--gold" id="exclusiveEyebrow">trabalho artesanal</p>
+        <h2 class="section-title section-title--light" id="exclusiveTitle">Nada de prateleira.<br>Nada de duas iguais.</h2>
+        <p class="exclusiva__lead" id="exclusiveLead">
           Cada Nephila é produzida para ser <strong>única</strong>: o textura, o caimento
           e o acabamento variam a cada peça — é a assinatura do feito à mão.
         </p>
-        <div class="exclusiva__grid">
+        <div class="exclusiva__grid" id="exclusiveGrid">
           <div class="card-excl">
             <span class="card-excl__num">01</span>
             <h3>Peça única</h3>
@@ -199,7 +199,7 @@
           </div>
         </div>
         <div class="exclusiva__cta">
-          <p>Quer uma peça exclusiva ou saber a disponibilidade de uma bolsa?<br>
+          <p id="exclusiveCta">Quer uma peça exclusiva ou saber a disponibilidade de uma bolsa?<br>
              <strong>Fale direto com Milena:</strong></p>
           <a class="btn btn--gold" id="exclusivaWhatsapp">WhatsApp</a>
           <a class="btn btn--outline" id="exclusivaEmail">E-mail</a>
@@ -212,9 +212,9 @@
       <div class="container">
         <div class="contato__grid">
           <div class="contato__text">
-            <p class="eyebrow">conversar com a artesã</p>
-            <h2 class="section-title">Encomende ou tire dúvidas</h2>
-            <p class="contato__intro">
+            <p class="eyebrow" id="contactEyebrow">conversar com a artesã</p>
+            <h2 class="section-title" id="contactTitle">Encomende ou tire dúvidas</h2>
+            <p class="contato__intro" id="contactIntro">
               Disponibilidade, valores e entrega são sempre combinados direto com a Milena.
               É só chamar no canal que preferir — ela responde com carinho.
             </p>
@@ -238,15 +238,15 @@
             </div>
           </div>
           <form class="pedido" id="formPedido" novalidate>
-            <label class="pedido__label" for="formNome">Seu nome</label>
+            <label class="pedido__label" id="formNameLabel" for="formNome">Seu nome</label>
             <input class="pedido__field" type="text" id="formNome" name="nome" placeholder="Como podemos te chamar?" required>
 
-            <label class="pedido__label" for="formMensagem">Mensagem</label>
+            <label class="pedido__label" id="formMessageLabel" for="formMensagem">Mensagem</label>
             <textarea class="pedido__field" id="formMensagem" name="mensagem" rows="4"
               placeholder="Olá, Milena! Gostaria de saber a disponibilidade de…" required></textarea>
 
-            <button class="btn btn--dark pedido__submit" type="submit">Enviar pelo WhatsApp</button>
-            <p class="pedido__hint">O formulário abre uma conversa no WhatsApp com a mensagem pronta para enviar.</p>
+            <button class="btn btn--dark pedido__submit" id="formSubmit" type="submit">Enviar pelo WhatsApp</button>
+            <p class="pedido__hint" id="formHint">O formulário abre uma conversa no WhatsApp com a mensagem pronta para enviar.</p>
           </form>
         </div>
       </div>
@@ -259,7 +259,7 @@
       <a class="footer__brand" href="#inicio">
         <img src="img/logo-fundo-transparente-nome-branco.png" alt="Logo Nephila">
       </a>
-      <p class="footer__credit">© <span id="footYear"></span> Nephila · Crochê &amp; Macramê · Feito à mão pela Milena</p>
+      <p class="footer__credit">© <span id="footYear"></span> <span id="footerCredit">Nephila · Crochê &amp; Macramê · Feito à mão pela Milena</span></p>
     </div>
   </footer>
 

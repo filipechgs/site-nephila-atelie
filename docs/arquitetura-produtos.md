@@ -7,8 +7,8 @@ Decisões de como as peças do site Nephila são guardadas, editadas e publicada
 - A fonte da verdade das peças é a pasta `produtos/`, não o `js/data.js`.
 - Um script lê essa pasta e gera `js/data.js`. O `index.html` e o `js/main.js` continuam iguais: o site público segue estático no GitHub Pages.
 - O painel de edição usa Node e Express, sem login. Ele escuta na rede de casa, na porta `3847`. Ao iniciar, o console mostra a URL absoluta para abrir de outro aparelho.
-- Quem cria e edita categorias, textos e fotos é o painel. **Ver Site** atualiza a página neste computador e abre a prévia. **Publicar atualização** faz commit e push, depois de uma confirmação.
-- Marca, bio e contato ficam em `site.json`. O painel não altera esses dados.
+- Quem cria e edita categorias, textos, a foto da Milena e as fotos das peças é o painel. **Ver Site** atualiza a página neste computador e abre a prévia. **Publicar atualização** faz commit e push, depois de uma confirmação.
+- Marca, textos da página, bio, contato e a foto da Milena ficam em `site.json` e em `img/milena.jpeg` (ou png/webp). O painel edita esses dados em **Textos e foto**.
 - O preço é o último parágrafo do Markdown da peça, em reais, como deve aparecer no site (exemplo: `R$ 180,00`).
 - As fotos podem ser enviadas com qualquer nome. O servidor grava `nome-da-peca-0.jpeg`, `nome-da-peca-1.jpeg` e assim por diante.
 
@@ -51,6 +51,7 @@ Entram no commit apenas:
 - `produtos/`
 - `js/data.js`
 - `site.json`
+- `img/milena.jpeg` (ou a mesma foto em png ou webp)
 
 Outras alterações do repositório ficam de fora. O painel não altera a configuração do Git, não troca de branch, não ignora hooks e não faz push forçado.
 
@@ -138,6 +139,7 @@ No `js/data.js` o caminho fica relativo, por exemplo `produtos/bolsas/rita/rita-
 - Receber fotos pelo navegador e renomear.
 - Remover foto e mudar a ordem.
 - Gerar `js/data.js`.
+- Editar os textos da página, o contato e a foto da Milena.
 - Publicar as peças no GitHub, com confirmação.
 
 Renomear o nome visível também renomeia a pasta e os arquivos, para o slug continuar igual ao nome.
@@ -145,7 +147,6 @@ Renomear o nome visível também renomeia a pasta e os arquivos, para o slug con
 ## O que fica de fora
 
 - Login no painel.
-- Editar bio, WhatsApp ou e-mail pelo painel (isso é o `site.json`).
 - Publicar a cada salvamento. O envio ao GitHub só acontece no botão **Publicar atualização**, com confirmação.
 - Gerar um `index.html` novo. A página já existe e lê o `js/data.js`.
 

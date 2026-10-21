@@ -5,7 +5,6 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const PRODUTOS = path.join(ROOT, "produtos");
-const SITE_JSON = path.join(ROOT, "site.json");
 const DATA_JS = path.join(ROOT, "js", "data.js");
 const ORDER_PATH = path.join(PRODUTOS, "_ordem.json");
 
@@ -561,18 +560,17 @@ function reorderPhotos(category, slug, order) {
 }
 
 function readSite() {
-  if (!fs.existsSync(SITE_JSON)) {
-    throw new Error("site.json não encontrado.");
-  }
-  const site = JSON.parse(fs.readFileSync(SITE_JSON, "utf8"));
-  for (const key of ["brand", "artisan", "contact"]) {
-    if (!site[key]) throw new Error("site.json sem o campo " + key + ".");
-  }
-  return site;
+  return require("./site-content").readSite();
 }
 
 function buildData() {
   const site = readSite();
+  const artisan = Object.assign({}, site.artisan);
+  try {
+    artisan.photoVersion = String(fs.statSync(path.join(ROOT, artisan.photo)).mtimeMs);
+  } catch (err) {
+    artisan.photoVersion = "";
+  }
   const catalog = listCatalog();
   const categories = catalog.categories.map((cat) => ({
     id: cat.id,
@@ -599,8 +597,9 @@ function buildData() {
   }
   const payload = {
     brand: site.brand,
-    artisan: site.artisan,
+    artisan,
     contact: site.contact,
+    copy: site.copy,
     categories,
     products
   };
@@ -608,7 +607,7 @@ function buildData() {
     "/*",
     " * GERADO por scripts/build-data.js — não edite este arquivo à mão.",
     " * Peças e categorias: pasta produtos/ (painel: npm start).",
-    " * Marca, artesã e contato: site.json",
+    " * Textos, foto da Milena, marca e contato: site.json",
     " */",
     ""
   ].join("\n");

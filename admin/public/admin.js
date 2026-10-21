@@ -5,6 +5,9 @@ const state = {
   view: { type: "home" },
   dirty: false,
   pending: [],
+  site: null,
+  sitePhoto: null,
+  siteStamp: 0,
   unpublished: false,
   saving: false
 };
@@ -60,11 +63,22 @@ function pieceNeedsSave() {
   return state.dirty || state.pending.length > 0;
 }
 
+function siteNeedsSave() {
+  return state.view.type === "site" && (state.dirty || !!state.sitePhoto);
+}
+
+function unsaved() {
+  return state.dirty || state.pending.length > 0 || !!state.sitePhoto;
+}
+
 function syncActionBar() {
-  const save = pieceNeedsSave();
+  const savePiece = pieceNeedsSave();
+  const saveSite = siteNeedsSave();
+  const save = savePiece || saveSite;
   const publish = !save && state.unpublished;
   const bar = document.getElementById("actionBar");
-  document.getElementById("btnSavePiece").hidden = !save;
+  document.getElementById("btnSavePiece").hidden = !savePiece;
+  document.getElementById("btnSaveSite").hidden = !saveSite;
   document.getElementById("btnPublish").hidden = !publish;
   document.getElementById("btnBuild").hidden = save;
   bar.classList.toggle("is-saving", save);
@@ -115,9 +129,15 @@ function clearPending() {
   state.pending = [];
 }
 
+function clearSitePhoto() {
+  if (state.sitePhoto) URL.revokeObjectURL(state.sitePhoto.url);
+  state.sitePhoto = null;
+}
+
 function go(view) {
-  if (state.dirty && !window.confirm("Há alterações não salvas. Quer descartar?")) return;
+  if (unsaved() && !window.confirm("Há alterações não salvas. Quer descartar?")) return;
   clearPending();
+  clearSitePhoto();
   state.dirty = false;
   state.view = view;
   render();
@@ -125,7 +145,7 @@ function go(view) {
 }
 
 function scrollFormToTop() {
-  if (state.view.type !== "category" && state.view.type !== "category-form" && state.view.type !== "product") return;
+  if (state.view.type !== "category" && state.view.type !== "category-form" && state.view.type !== "product" && state.view.type !== "site") return;
   const workspace = document.getElementById("workspace");
   if (!workspace) return;
   const top = workspace.getBoundingClientRect().top + window.scrollY;
@@ -158,6 +178,7 @@ function renderHome() {
     "<li>Abra a categoria e cadastre a peça: nome, descrição, materiais, preço e fotos.</li>" +
     "<li>Clique em <strong>Ver Site</strong> para atualizar a página neste computador. Depois, <strong>Publicar atualização</strong> envia as peças ao ar.</li>" +
     "</ol>" +
+    "<p class=\"hint\">Os textos da página, o contato e a foto da Milena ficam em <strong>Textos e foto</strong>.</p>" +
     "<p class=\"hint\">As fotos não precisam estar com o nome certo. O painel grava como nome-da-peca-0.jpeg, nome-da-peca-1.jpeg e assim por diante.</p>"
   );
 }
@@ -292,6 +313,116 @@ function renderProductForm() {
   );
 }
 
+const SITE_FIELDS = [
+  { section: "A artesã", name: "name", label: "Nome", hint: "Aparece em negrito no início da página.", max: 80 },
+  { name: "firstName", label: "Nome nas mensagens", hint: "O WhatsApp começa com Olá e este nome.", max: 40 },
+  { name: "role", label: "Função", hint: "Aparece no Google, junto com o nome.", max: 80 },
+  { name: "bio", label: "Biografia", hint: "Uma linha em branco separa os parágrafos. Aparece na seção Sobre.", max: 4000, area: true, rows: 8 },
+  { section: "Contato", name: "whatsappNumber", label: "WhatsApp, só números", hint: "Com o 55 do Brasil. Exemplo: 5571993044037.", max: 20 },
+  { name: "whatsappDisplay", label: "WhatsApp como aparece no site", hint: "Exemplo: (71) 99304-4037.", max: 40 },
+  { name: "whatsappMessage", label: "Mensagem inicial do WhatsApp", hint: "Abre quando alguém toca no WhatsApp do site.", max: 400 },
+  { name: "email", label: "E-mail", max: 120 },
+  { name: "instagram", label: "Instagram", hint: "O endereço completo, começando com https://", max: 300 },
+  { name: "mercadoLivre", label: "Mercado Livre", hint: "O endereço completo, começando com https://", max: 300 },
+  { section: "Início", name: "heroEyebrow", label: "Frase pequena", hint: "Fica acima do título.", max: 80 },
+  { name: "heroTitle", label: "Título", hint: "Enter quebra a linha. **negrito** e *itálico* também valem nos títulos e parágrafos.", max: 160, area: true, rows: 3, short: true },
+  { name: "heroCopy", label: "Texto", max: 500, area: true, rows: 4 },
+  { name: "heroPrimary", label: "Botão das peças", max: 40 },
+  { name: "heroSecondary", label: "Botão de pedir", max: 40 },
+  { section: "Menu", name: "navInicio", label: "Início", max: 30 },
+  { name: "navSobre", label: "Sobre", max: 30 },
+  { name: "navProdutos", label: "Produtos", max: 30 },
+  { name: "navTodas", label: "Todas as peças", max: 40 },
+  { name: "navExclusiva", label: "Exclusividade", max: 30 },
+  { name: "navContato", label: "Contato", max: 30 },
+  { name: "navCta", label: "Botão do menu", max: 40 },
+  { section: "Sobre", name: "aboutEyebrow", label: "Frase pequena", max: 80 },
+  { name: "aboutTitle", label: "Título", hint: "Enter quebra a linha.", max: 180, area: true, rows: 3, short: true },
+  { name: "aboutTags", label: "Selos", hint: "Um selo por linha. Ficam abaixo da biografia.", max: 300, area: true, rows: 4, short: true },
+  { section: "Peças", name: "productsEyebrow", label: "Frase pequena", max: 80 },
+  { name: "productsTitle", label: "Título", max: 160, area: true, rows: 2, short: true },
+  { name: "productsIntro", label: "Texto", max: 500, area: true, rows: 4 },
+  { name: "filterAll", label: "Filtro de todas as categorias", max: 30 },
+  { name: "cardAsk", label: "Texto no card", hint: "Aparece em cada peça, ao lado da técnica.", max: 40 },
+  { name: "orderButton", label: "Botão de pedido", hint: "Fica na página da peça, e abre o WhatsApp.", max: 40 },
+  { name: "emptyCategory", label: "Categoria sem peças", max: 160 },
+  { name: "emptyPhoto", label: "Peça sem foto", max: 40 },
+  { section: "Exclusividade", name: "exclusiveEyebrow", label: "Frase pequena", max: 80 },
+  { name: "exclusiveTitle", label: "Título", hint: "Enter quebra a linha.", max: 180, area: true, rows: 3, short: true },
+  { name: "exclusiveLead", label: "Texto", max: 500, area: true, rows: 4 },
+  { name: "exclusive1Title", label: "Bloco 1, título", max: 60 },
+  { name: "exclusive1Text", label: "Bloco 1, texto", max: 280, area: true, rows: 3, short: true },
+  { name: "exclusive2Title", label: "Bloco 2, título", max: 60 },
+  { name: "exclusive2Text", label: "Bloco 2, texto", max: 280, area: true, rows: 3, short: true },
+  { name: "exclusive3Title", label: "Bloco 3, título", max: 60 },
+  { name: "exclusive3Text", label: "Bloco 3, texto", max: 280, area: true, rows: 3, short: true },
+  { name: "exclusiveCta", label: "Convite", hint: "Enter quebra a linha.", max: 300, area: true, rows: 3, short: true },
+  { name: "exclusiveWhatsapp", label: "Botão de WhatsApp", max: 30 },
+  { name: "exclusiveEmail", label: "Botão de e-mail", max: 30 },
+  { section: "Contato na página", name: "contactEyebrow", label: "Frase pequena", max: 80 },
+  { name: "contactTitle", label: "Título", max: 160 },
+  { name: "contactIntro", label: "Texto", max: 500, area: true, rows: 4 },
+  { name: "formNameLabel", label: "Rótulo do nome", max: 40 },
+  { name: "formNamePlaceholder", label: "Exemplo do nome", max: 80 },
+  { name: "formMessageLabel", label: "Rótulo da mensagem", max: 40 },
+  { name: "formMessagePlaceholder", label: "Exemplo da mensagem", max: 160 },
+  { name: "formSubmit", label: "Botão do formulário", max: 60 },
+  { name: "formHint", label: "Explicação do formulário", max: 220 },
+  { name: "floatLabel", label: "Nome do botão redondo", hint: "É o botão de WhatsApp que fica no canto da página.", max: 80 },
+  { section: "Rodapé", name: "footerCredit", label: "Crédito", hint: "O ano é colocado sozinho, antes desta frase.", max: 180 },
+  { section: "A marca", name: "brand", label: "Nome da marca", max: 40 },
+  { section: "Google", name: "seoTitle", label: "Título", hint: "Aparece na aba do navegador e quando alguém procura o site.", max: 140 },
+  { name: "seoDescription", label: "Descrição", max: 320, area: true, rows: 3, short: true },
+  { name: "seoShare", label: "Texto ao compartilhar", hint: "Aparece quando o site é enviado no WhatsApp ou nas redes.", max: 320, area: true, rows: 3, short: true },
+  { name: "seoKeywords", label: "Palavras", hint: "Separe por vírgula.", max: 300 }
+];
+
+function siteField(field, value) {
+  const max = " maxlength=\"" + field.max + "\"";
+  if (field.area) {
+    return "<textarea name=\"" + field.name + "\" rows=\"" + (field.rows || 4) + "\"" + (field.short ? " class=\"short\"" : "") + max + " required>" + esc(value || "") + "</textarea>";
+  }
+  return "<input name=\"" + field.name + "\" type=\"text\"" + max + " required value=\"" + esc(value || "") + "\">";
+}
+
+function sitePhotoBlock() {
+  const src = state.sitePhoto
+    ? state.sitePhoto.url
+    : (state.site && state.site.photo ? "/" + state.site.photo + "?t=" + (state.siteStamp || 1) : "");
+  return (
+    "<div class=\"portrait\"><img id=\"sitePhotoPreview\" src=\"" + esc(src) + "\" alt=\"Foto da Milena\"></div>" +
+    "<div class=\"dropzone\" id=\"siteDrop\">" +
+    "<p>Esta foto aparece na seção Sobre. JPEG, PNG ou WebP.</p>" +
+    (state.sitePhoto ? "<p class=\"hint\">A nova foto entra quando você salvar.</p>" : "") +
+    "<button class=\"btn btn--small btn--ghost\" type=\"button\" data-action=\"pick-site-photo\">Trocar foto</button>" +
+    "<input id=\"sitePhotoInput\" type=\"file\" accept=\".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp\" hidden>" +
+    "</div>"
+  );
+}
+
+function renderSiteForm() {
+  if (!state.site) {
+    return "<h2>Textos e foto</h2><p class=\"empty\">Os textos ainda não carregaram. Atualize a página.</p>";
+  }
+  let section = "";
+  const fields = SITE_FIELDS.map((field) => {
+    let html = "";
+    if (field.section !== section) {
+      section = field.section;
+      html += "<h3 class=\"form-section\">" + esc(section) + "</h3>";
+      if (section === "A artesã") html += sitePhotoBlock();
+    }
+    html += "<label><span>" + esc(field.label) + "</span>" + siteField(field, state.site[field.name]) +
+      (field.hint ? "<p class=\"hint\">" + esc(field.hint) + "</p>" : "") + "</label>";
+    return html;
+  }).join("");
+  return (
+    "<h2>Textos e foto</h2>" +
+    "<p class=\"hint\">Quando mudar um texto ou a foto, <strong>Salvar textos e fotos</strong> aparece aqui embaixo.</p>" +
+    "<form class=\"form\" id=\"siteForm\" data-form=\"site\" autocomplete=\"off\">" + fields + "</form>"
+  );
+}
+
 function renderWorkspace() {
   const workspace = document.getElementById("workspace");
   if (state.view.type === "category") {
@@ -304,6 +435,8 @@ function renderWorkspace() {
     const category = categoryById(state.view.category);
     workspace.innerHTML = category ? renderProductForm() : renderHome();
     updateSlugHint();
+  } else if (state.view.type === "site") {
+    workspace.innerHTML = renderSiteForm();
   } else {
     workspace.innerHTML = renderHome();
   }
@@ -311,6 +444,8 @@ function renderWorkspace() {
 
 function render() {
   renderCategories();
+  const siteButton = document.getElementById("btnEditSite");
+  if (siteButton) siteButton.classList.toggle("is-active", state.view.type === "site");
   renderWorkspace();
   syncActionBar();
 }
@@ -363,6 +498,66 @@ function addPending(fileList) {
   state.dirty = true;
   fillPhotos();
   syncActionBar();
+}
+
+function setSitePhoto(fileList) {
+  const file = Array.from(fileList || [])[0];
+  if (!file) return;
+  if (!isAllowedPhoto(file)) {
+    setStatus("Use uma foto JPEG, PNG ou WebP.", "error");
+    return;
+  }
+  clearSitePhoto();
+  state.sitePhoto = { file, url: URL.createObjectURL(file) };
+  state.dirty = true;
+  const img = document.getElementById("sitePhotoPreview");
+  if (img) img.src = state.sitePhoto.url;
+  const zone = document.getElementById("siteDrop");
+  if (zone && !zone.querySelector(".hint")) {
+    const note = document.createElement("p");
+    note.className = "hint";
+    note.textContent = "A nova foto entra quando você salvar.";
+    zone.insertBefore(note, zone.querySelector("button"));
+  }
+  syncActionBar();
+}
+
+async function saveSite(form) {
+  if (state.saving) return;
+  if (!state.site) {
+    setStatus("Os textos ainda não carregaram.", "error");
+    return;
+  }
+  state.saving = true;
+  const payload = {};
+  SITE_FIELDS.forEach((field) => {
+    payload[field.name] = form.elements[field.name].value;
+  });
+  try {
+    let result = await api("/api/site", {
+      method: "PATCH",
+      headers: JSON_HEADERS,
+      body: JSON.stringify(payload)
+    });
+    state.site = result.fields;
+    if (state.sitePhoto) {
+      const data = new FormData();
+      data.append("photo", state.sitePhoto.file);
+      result = await api("/api/site/photo", { method: "POST", body: data });
+      state.site = result.fields;
+      clearSitePhoto();
+    }
+    state.dirty = false;
+    state.siteStamp = Date.now();
+    state.unpublished = true;
+    render();
+    setStatus("Textos salvos.", "ok");
+    refreshUnpublished();
+  } catch (err) {
+    setStatus(err.message, "error");
+  } finally {
+    state.saving = false;
+  }
 }
 
 async function saveCategory(form) {
@@ -498,7 +693,7 @@ async function deleteProduct() {
 }
 
 async function buildSite() {
-  if (state.dirty || state.pending.length) {
+  if (state.dirty || state.pending.length || state.sitePhoto) {
     setStatus("Salve as alterações antes de ver o site.", "error");
     return;
   }
@@ -538,6 +733,10 @@ function onClick(event) {
     const input = document.getElementById("photoInput");
     if (input) input.click();
   }
+  if (action === "pick-site-photo") {
+    const input = document.getElementById("sitePhotoInput");
+    if (input) input.click();
+  }
   if (action === "remove-pending") {
     const index = Number(button.dataset.index);
     const removed = state.pending.splice(index, 1)[0];
@@ -562,6 +761,7 @@ function onClick(event) {
 document.getElementById("catList").addEventListener("click", onClick);
 document.getElementById("workspace").addEventListener("click", onClick);
 document.getElementById("btnNewCategory").addEventListener("click", () => go({ type: "category-form" }));
+document.getElementById("btnEditSite").addEventListener("click", () => go({ type: "site" }));
 document.getElementById("btnBuild").addEventListener("click", buildSite);
 
 function closePublish() {
@@ -569,7 +769,7 @@ function closePublish() {
 }
 
 async function openPublish() {
-  if (state.dirty) {
+  if (unsaved()) {
     setStatus("Salve as alterações antes de publicar.", "error");
     return;
   }
@@ -640,38 +840,50 @@ document.getElementById("workspace").addEventListener("submit", (event) => {
   event.preventDefault();
   if (event.target.dataset.form === "category") saveCategory(event.target);
   if (event.target.dataset.form === "product") saveProduct(event.target);
+  if (event.target.dataset.form === "site") saveSite(event.target);
 });
 
 document.getElementById("workspace").addEventListener("input", (event) => {
-  if (event.target.id === "photoInput") return;
+  if (event.target.id === "photoInput" || event.target.id === "sitePhotoInput") return;
   state.dirty = true;
   updateSlugHint();
   syncActionBar();
 });
 
 document.getElementById("workspace").addEventListener("change", (event) => {
+  if (event.target.id === "sitePhotoInput") {
+    setSitePhoto(event.target.files);
+    event.target.value = "";
+    return;
+  }
   if (event.target.id !== "photoInput") return;
   addPending(event.target.files);
   event.target.value = "";
 });
 
+function dropZone(event) {
+  return event.target.closest("#dropzone, #siteDrop");
+}
+
 document.getElementById("workspace").addEventListener("dragover", (event) => {
-  if (!event.target.closest("#dropzone")) return;
+  const zone = dropZone(event);
+  if (!zone) return;
   event.preventDefault();
-  event.target.closest("#dropzone").classList.add("is-over");
+  zone.classList.add("is-over");
 });
 
 document.getElementById("workspace").addEventListener("dragleave", (event) => {
-  const zone = event.target.closest("#dropzone");
+  const zone = dropZone(event);
   if (zone) zone.classList.remove("is-over");
 });
 
 document.getElementById("workspace").addEventListener("drop", (event) => {
-  const zone = event.target.closest("#dropzone");
+  const zone = dropZone(event);
   if (!zone) return;
   event.preventDefault();
   zone.classList.remove("is-over");
-  addPending(event.dataTransfer.files);
+  if (zone.id === "siteDrop") setSitePhoto(event.dataTransfer.files);
+  else addPending(event.dataTransfer.files);
 });
 
 api("/api/catalog").then((catalog) => {
@@ -681,4 +893,9 @@ api("/api/catalog").then((catalog) => {
   if (catalog.warnings && catalog.warnings.length) {
     setStatus("Há textos para revisar: " + catalog.warnings.join(" "), "warn");
   }
+}).catch((err) => setStatus(err.message, "error"));
+
+api("/api/site").then((result) => {
+  state.site = result.fields;
+  if (state.view.type === "site") render();
 }).catch((err) => setStatus(err.message, "error"));

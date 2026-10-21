@@ -40,9 +40,19 @@ function normalizePath(value) {
   return String(value || "").replace(/\\/g, "/").replace(/^\.\/+/, "").replace(/\/+$/, "");
 }
 
+function isMilenaPhoto(file) {
+  return /^img\/milena\.(jpe?g|png|webp)$/i.test(file);
+}
+
 function isAllowed(file) {
   const norm = normalizePath(file);
-  return norm === "js/data.js" || norm === "site.json" || norm === "produtos" || norm.indexOf("produtos/") === 0;
+  return norm === "js/data.js" || norm === "site.json" || isMilenaPhoto(norm) || norm === "produtos" || norm.indexOf("produtos/") === 0;
+}
+
+function publishPaths() {
+  const photos = ["img/milena.jpeg", "img/milena.jpg", "img/milena.png", "img/milena.webp"]
+    .filter((rel) => fs.existsSync(path.join(ROOT, rel)));
+  return ALLOWED.concat(photos);
 }
 
 function parseStatusZ(stdout) {
@@ -126,6 +136,7 @@ function linesFromEntries(entries, names) {
   const products = new Map();
   const categories = new Map();
   let siteJson = false;
+  let milena = false;
   let dataJs = false;
   let order = false;
 
@@ -144,6 +155,10 @@ function linesFromEntries(entries, names) {
     const file = normalizePath(entry.path);
     if (file === "site.json") {
       siteJson = true;
+      return;
+    }
+    if (isMilenaPhoto(file)) {
+      milena = true;
       return;
     }
     if (file === "js/data.js") {
@@ -218,7 +233,8 @@ function linesFromEntries(entries, names) {
     .concat(sortPt(removed))
     .concat(sortPt(updatedCategories))
     .concat(sortPt(removedCategories));
-  if (siteJson) lines.push("Atualiza marca, bio ou contato");
+  if (milena) lines.push("Atualiza a foto da Milena");
+  if (siteJson) lines.push("Atualiza os textos da página");
   if (!lines.length && order) lines.push("Atualiza a ordem das peças");
   if (!lines.length && dataJs) lines.push("Atualiza os dados gerados do site");
   return lines;
@@ -227,7 +243,13 @@ function linesFromEntries(entries, names) {
 function composeMessage(lines) {
   if (!lines.length) return "";
   if (lines.length === 1) return lines[0].endsWith(".") ? lines[0] : lines[0] + ".";
-  return "Atualiza as peças do site.\n\n" + lines.map((line) => "- " + line).join("\n");
+  const onlySite = lines.every((line) => (
+    line.startsWith("Atualiza os textos")
+    || line.startsWith("Atualiza a foto da Milena")
+    || line.startsWith("Atualiza os dados")
+  ));
+  const subject = onlySite ? "Atualiza os textos do site." : "Atualiza as peças do site.";
+  return subject + "\n\n" + lines.map((line) => "- " + line).join("\n");
 }
 
 function messageFor(entries) {
@@ -235,7 +257,7 @@ function messageFor(entries) {
 }
 
 function trackedChanges() {
-  const result = git(["diff", "--name-only", "-z", "HEAD", "--"].concat(ALLOWED));
+  const result = git(["diff", "--name-only", "-z", "HEAD", "--"].concat(publishPaths()));
   if (result.status !== 0) {
     throw new PublishError(400, gitText(result.stderr, result.stdout) || "Não foi possível comparar as peças.");
   }
@@ -248,7 +270,7 @@ function trackedChanges() {
 }
 
 function readStatus() {
-  const result = git(["status", "--porcelain", "-z", "-uall", "--"].concat(ALLOWED));
+  const result = git(["status", "--porcelain", "-z", "-uall", "--"].concat(publishPaths()));
   if (result.status !== 0) {
     throw new PublishError(400, gitText(result.stderr, result.stdout) || "Não foi possível ler o estado do Git.");
   }
@@ -293,16 +315,17 @@ function preview() {
 function publish(message) {
   require("./catalog").buildData();
   const pending = readStatus();
-  if (!pending.length) throw new PublishError(400, "Não há mudanças de peças para publicar.");
+  if (!pending.length) throw new PublishError(400, "Não há mudanças para publicar.");
   const split = splitMessage(message);
-  const added = git(["add", "--"].concat(ALLOWED));
+  const paths = publishPaths();
+  const added = git(["add", "--"].concat(paths));
   if (added.status !== 0) {
     throw new PublishError(400, gitText(added.stderr, added.stdout) || "Não foi possível preparar os arquivos.");
   }
   const args = ["commit", "-m", split.subject];
   if (split.body) args.push("-m", split.body);
   args.push("--");
-  args.push.apply(args, ALLOWED);
+  args.push.apply(args, paths);
   const committed = git(args);
   if (committed.status !== 0) {
     throw new PublishError(400, gitText(committed.stderr, committed.stdout) || "O commit não foi feito.");
@@ -331,7 +354,7 @@ function publish(message) {
 
 function pending() {
   const files = readStatus().map((entry) => entry.path);
-  const unpushed = git(["diff", "--name-only", "-z", "@{upstream}", "HEAD", "--"].concat(ALLOWED));
+  const unpushed = git(["diff", "--name-only", "-z", "@{upstream}", "HEAD", "--"].concat(publishPaths()));
   if (unpushed.status === 0) {
     String(unpushed.stdout || "").split("\0").forEach((file) => {
       const norm = normalizePath(file);

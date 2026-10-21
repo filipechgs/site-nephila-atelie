@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server/index.js",
     "build": "node scripts/build-data.js",
+    "exe": "node scripts/build-exe.js",
     "migrate": "node scripts/migrate.js"
   },
   "engines": {
@@ -13,5 +14,8 @@
   "dependencies": {
     "express": "^4.21.2",
     "multer": "^2.4.0"
+  },
+  "devDependencies": {
+    "postject": "^1.0.0-alpha.6"
   }
 }

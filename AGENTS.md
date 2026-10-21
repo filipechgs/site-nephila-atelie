@@ -25,7 +25,8 @@ produtos/ + site.json → scripts/build-data.js → js/data.js → js/main.js �
 | Arquivo | O que faz | Pode editar? |
 |---------|-----------|--------------|
 | `produtos/` | Categorias, Markdown e fotos das peças | SIM — fonte da verdade |
-| `site.json` | Marca, bio e contato | SIM |
+| `site.json` | Marca, textos, bio e contato. O painel edita em Textos e foto | SIM |
+| `img/milena.jpeg` | Foto da artesã. O painel troca em Textos e foto | SIM — substituir |
 | `js/data.js` | Gerado pelo build. O site lê daqui | NÃO — rode `npm run build` |
 | `js/main.js` | Renderiza navbar, filtros, carrosséis, contato | Cuidado — lógica |
 | `css/style.css` | Estilos mobile-first, paleta teal/dourado/creme | Cuidado — visual |
@@ -34,7 +35,6 @@ produtos/ + site.json → scripts/build-data.js → js/data.js → js/main.js �
 | `server/index.js` | API local do painel | Cuidado |
 | `scripts/catalog.js` | Leitura, gravação e build das peças | Cuidado |
 | `scripts/publish.js` | Mensagem, commit e push só das peças | Cuidado |
-| `img/milena.jpeg` | Foto da artesã | SIM — substituir |
 | `fonts/Alice-Regular.ttf` | Fonte do título da marca | Não mexer |
 
 ## Paleta de cores
@@ -128,7 +128,7 @@ node --check js/main.js
 ## Regras para o agente
 
 1. **Peças e categorias:** editar `produtos/`, nunca o miolo de `js/data.js`
-2. **Marca, bio e contato:** editar `site.json` e rodar `npm run build`
+2. **Marca, textos, bio, contato e foto da Milena:** pelo painel, em **Textos e foto**, ou editando `site.json` e `img/milena.jpeg` e rodando `npm run build`
 3. **Sempre gerar** `js/data.js` depois de mudar conteúdo (`npm run build`)
 4. **Validar sintaxe** com `node --check`
 5. **Não alterar** `js/main.js`, CSS ou HTML sem necessidade
@@ -136,4 +136,4 @@ node --check js/main.js
 7. **Preservar a paleta** (teal/dourado/creme)
 8. **Commit em português**
 9. **Não rodar `npm run migrate` de novo** — a migração das fotos antigas já foi feita
-10. **Não publicar pelo painel** salvo pedido explícito. **Publicar atualização** envia só `produtos/`, `js/data.js` e `site.json`
+10. **Não publicar pelo painel** salvo pedido explícito. **Publicar atualização** envia só `produtos/`, `js/data.js`, `site.json` e a foto `img/milena`

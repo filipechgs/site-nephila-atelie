@@ -52,13 +52,13 @@ Neste computador, abra [http://127.0.0.1:3847/admin](http://127.0.0.1:3847/admin
 4. Clique em **Ver Site**. O painel atualiza a página e abre a prévia.
 5. Clique em **Publicar atualização**. O painel mostra a mensagem e os arquivos. **Enviar ao ar** faz o commit e o push para o GitHub Pages.
 
-**Publicar atualização** envia só `produtos/`, `js/data.js` e `site.json`. Quem edita as pastas à mão pode usar o mesmo botão depois de ver o site. Se o celular não abrir o painel, permita o Node no Firewall do Windows, na rede privada.
+**Publicar atualização** envia só `produtos/`, `js/data.js`, `site.json` e a foto da Milena. Quem edita as pastas à mão pode usar o mesmo botão depois de ver o site. Se o celular não abrir o painel, permita o Node no Firewall do Windows, na rede privada.
 
 Peças que já estavam no site foram migradas com o preço **Sob consulta** e sem lista de materiais. Abra cada uma no painel para completar.
 
 ## Marca, bio e contato
 
-Esses dados ficam em `site.json`, inclusive os links de Instagram e Mercado Livre. Os endereços atuais são placeholders (`seu-perfil`): troque pelas URLs reais e gere de novo.
+Esses dados ficam em `site.json`, inclusive os links de Instagram e Mercado Livre. No painel, abra **Textos e foto**. Os endereços atuais de Instagram e Mercado Livre são placeholders (`seu-perfil`): troque pelas URLs reais, salve e use **Ver Site**.
 
 ```bash
 npm run build

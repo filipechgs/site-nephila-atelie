@@ -17,7 +17,7 @@
       <div>
         <p class="brand">Nephila</p>
         <h1>Organizar peças</h1>
-        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. <strong>Ver Site</strong> atualiza a página neste computador e abre a prévia. <strong>Publicar atualização</strong> envia as peças ao ar.</p>
+        <p class="lede">Crie categorias, cadastre cada peça e envie as fotos com o nome que elas tiverem no computador. O painel ajusta os nomes. Os textos da página e a foto da Milena ficam em <strong>Textos e foto</strong>. <strong>Ver Site</strong> atualiza a página neste computador e abre a prévia. <strong>Publicar atualização</strong> envia as peças ao ar.</p>
       </div>
     </header>
 
@@ -27,8 +27,12 @@
     </div>
 
     <div class="layout">
-      <aside class="panel">
-        <div class="panel__head">
+    <aside class="panel">
+      <button type="button" class="site-entry" id="btnEditSite">
+        <strong>Textos e foto</strong>
+        <small>Página, contato e Milena</small>
+      </button>
+      <div class="panel__head">
           <h2>Categorias</h2>
           <button class="btn btn--small btn--dark" id="btnNewCategory" type="button">Nova</button>
         </div>
@@ -39,12 +43,13 @@
     </div>
 
     <footer class="foot">
-      <p>Ver Site atualiza a página neste computador e abre a prévia. Publicar atualização envia só as peças ao GitHub, para o site nephilaatelie.com.br. Quem estiver na mesma rede Wi-Fi também pode abrir este painel.</p>
+      <p>Ver Site atualiza a página neste computador e abre a prévia. Publicar atualização envia as peças, os textos e a foto da Milena ao GitHub, para o site nephilaatelie.com.br. Quem estiver na mesma rede Wi-Fi também pode abrir este painel.</p>
     </footer>
   </div>
 
   <nav class="action-bar is-single" id="actionBar" aria-label="Ações do painel">
     <button class="btn btn--gold" id="btnSavePiece" type="submit" form="productForm" hidden>Salvar peça</button>
+    <button class="btn btn--gold" id="btnSaveSite" type="submit" form="siteForm" hidden>Salvar textos e fotos</button>
     <button class="btn btn--ghost" id="btnPublish" type="button" hidden>Publicar atualização</button>
     <button class="btn btn--gold" id="btnBuild" type="button">Ver Site</button>
   </nav>
@@ -52,7 +57,7 @@
   <div id="publishSheet" class="sheet" hidden>
     <div class="sheet__card" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
       <h2 id="publishTitle">Publicar no ar</h2>
-      <p class="hint">Confira a mensagem. Só as peças, o arquivo gerado do site e o contato entram nesse envio.</p>
+      <p class="hint">Confira a mensagem. As peças, os textos, a foto da Milena e o arquivo gerado do site entram nesse envio.</p>
       <label class="sheet__label"><span>Mensagem</span>
         <textarea id="publishMessage" rows="8" maxlength="4000"></textarea>
       </label>
