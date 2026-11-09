@@ -2,4 +2,8 @@
 
 Bolsa artesanal com acabamento impecável e fios selecionados.
 
-Sob consulta
+- Base porta celular em sintético Montana, fio de malha ou poliéster premium.
+
+Técnica: Crochê
+
+R$ 144,90

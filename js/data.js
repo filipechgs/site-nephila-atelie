@@ -178,9 +178,11 @@ const SITE = {
       "name": "Malu",
       "category": "bolsas",
       "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
-      "price": "Sob consulta",
+      "materials": [
+        "Base porta celular em sintético Montana, fio de malha ou poliéster premium."
+      ],
+      "technique": "Crochê",
+      "price": "R$ 144,90",
       "photos": [
         "produtos/bolsas/malu/malu-0.jpeg"
       ]
