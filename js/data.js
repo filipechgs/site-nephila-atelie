@@ -236,18 +236,6 @@ const SITE = {
       ]
     },
     {
-      "id": "bau",
-      "name": "Bau",
-      "category": "bolsas",
-      "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
-      "price": "Sob consulta",
-      "photos": [
-        "produtos/bolsas/bau/bau-0.jpeg"
-      ]
-    },
-    {
       "id": "trio",
       "name": "Trio",
       "category": "bolsas",
