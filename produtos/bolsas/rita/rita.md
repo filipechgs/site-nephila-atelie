@@ -7,4 +7,4 @@ Rita é autenticidade e irreverência numa clutch. Os pontos do macramê na fren
 
 Técnica: Macramê
 
-R$ 298
+R$ 308
