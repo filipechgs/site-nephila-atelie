@@ -44,7 +44,7 @@ const SITE = {
     "aboutTitle": "Por trás de cada peça,\nas mãos da *Milena*.",
     "productsEyebrow": "ateliê",
     "productsTitle": "Peças que carregam história",
-    "productsIntro": "Bolsas, decoração e acessórios tecidos à mão. Toque numa peça para conhecê-la — disponibilidade e medidas são combinadas direto com a artesã.",
+    "productsIntro": "Bolsas, decoração e acessórios tecidos à mão. Toque numa peça para conhecê-la.",
     "filterAll": "Todos",
     "cardAsk": "Quero saber mais",
     "orderButton": "Fazer pedido",
