@@ -269,7 +269,7 @@ const SITE = {
         "Fio premium, forro em tricoline, sintético montana e metais de alta qualidade. Dimensões (LxPxA): 24x9x20cm"
       ],
       "technique": "Crochê",
-      "price": "R$ 325,00",
+      "price": "R$ 315,00",
       "photos": [
         "produtos/bolsas/matilda/matilda-0.png",
         "produtos/bolsas/matilda/matilda-1.png",

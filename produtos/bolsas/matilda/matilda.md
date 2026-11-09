@@ -6,4 +6,4 @@ Bolsa de tamanho médio e espaçosa, com fundo caixa de leite, fecho em zíper e
 
 Técnica: Crochê
 
-R$ 325,00
+R$ 315,00
