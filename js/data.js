@@ -177,14 +177,15 @@ const SITE = {
       "id": "malu",
       "name": "Malu",
       "category": "bolsas",
-      "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
+      "desc": "Aquela bolsinha para fazer um passeio rápido, ou simplesmente quando você só precisa carregar o básico. Um porta celular, mas que cabe documentos, chaves, batom... Porque a gente pode sair básica, mas sem perder o charme e a elegância.",
       "materials": [
         "Base porta celular em sintético Montana, fio de malha ou poliéster premium."
       ],
       "technique": "Crochê",
       "price": "R$ 144,90",
       "photos": [
-        "produtos/bolsas/malu/malu-0.jpeg"
+        "produtos/bolsas/malu/malu-0.jpeg",
+        "produtos/bolsas/malu/malu-1.jpeg"
       ]
     },
     {
