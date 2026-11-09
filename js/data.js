@@ -165,10 +165,13 @@ const SITE = {
       "id": "melina",
       "name": "Melina",
       "category": "bolsas",
-      "desc": "Bolsa artesanal com acabamento impecável e fios selecionados.",
-      "materials": [],
-      "technique": "Crochê, Macramê",
-      "price": "Sob consulta",
+      "desc": "Bolsa Melina é sinônimo de praticidade e versatilidade. Cai bem em looks desde os mais clássicos aos mais despojados. É aquela bolsa que vc carrega pra lá e pra cá sem precisar se preocupar se combina. Nada melhor do que ter uma preocupação a menos!",
+      "materials": [
+        "Fio de malha premium",
+        "Acessórios em sintético"
+      ],
+      "technique": "Crochê",
+      "price": "R$ 293",
       "photos": [
         "produtos/bolsas/melina/melina-0.jpeg"
       ]
