@@ -116,7 +116,7 @@ const SITE = {
         "Alça em corda náutica 2.5mm"
       ],
       "technique": "Macramê",
-      "price": "R$ 323,50",
+      "price": "R$ 298",
       "photos": [
         "produtos/bolsas/rita/rita-0.png",
         "produtos/bolsas/rita/rita-1.png",
