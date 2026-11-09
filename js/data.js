@@ -37,7 +37,7 @@ const SITE = {
     "navCta": "Pedir uma peça",
     "heroEyebrow": "crochê · macramê · feito à mão",
     "heroTitle": "arte em cada linha,\nnó por nó",
-    "heroCopy": "Peças exclusivas tecidas por **Milena**, da primeira laçada ao último detalhe. Cada Nephila é única — como quem a usa.",
+    "heroCopy": "Peças exclusivas e feitas à mão, nó por nó, com muito cuidado e carinho. Cada Nephila é única — como quem a usa.",
     "heroPrimary": "Ver bolsas",
     "heroSecondary": "Pedir uma peça",
     "aboutEyebrow": "a artesã",
@@ -58,24 +58,24 @@ const SITE = {
     "exclusiveEmail": "E-mail",
     "contactEyebrow": "conversar com a artesã",
     "contactTitle": "Encomende ou tire dúvidas",
-    "contactIntro": "Disponibilidade, valores e entrega são sempre combinados direto com a Milena. É só chamar no canal que preferir — ela responde com carinho.",
+    "contactIntro": "Disponibilidade, valores e entrega são sempre combinados direto com a artesã. É só chamar no canal que preferir — ela responde com carinho.",
     "formNameLabel": "Seu nome",
     "formNamePlaceholder": "Como podemos te chamar?",
     "formMessageLabel": "Mensagem",
     "formMessagePlaceholder": "Olá, Milena! Gostaria de saber a disponibilidade de…",
     "formSubmit": "Enviar pelo WhatsApp",
     "formHint": "O formulário abre uma conversa no WhatsApp com a mensagem pronta para enviar.",
-    "footerCredit": "Nephila · Crochê & Macramê · Feito à mão pela Milena",
+    "footerCredit": "Nephila · Crochê & Macramê · Feito à mão",
     "floatLabel": "Conversar com Milena no WhatsApp",
     "aboutTags": [
-      "Peça única",
+      "Exclusividade",
       "Feita à mão",
       "Fios selecionados"
     ],
     "exclusiveCards": [
       {
         "title": "Peça única",
-        "text": "Nenhuma bolsa sai do tear igual à anterior. Você leva algo só seu."
+        "text": "Nenhuma bolsa sai igual à anterior. Você leva algo só seu."
       },
       {
         "title": "Sob encomenda",
