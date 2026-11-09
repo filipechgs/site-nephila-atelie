@@ -10,8 +10,7 @@ const SITE = {
     "firstName": "Milena",
     "role": "Artesã · Crochê & Macramê",
     "bio": [
-      "Cada peça Nephila nasce nas mãos de Milena, linha por linha, nó por nó.",
-      "O nome vem da aranha Nephila, que tece fios de seda dourada e resistente. É assim que Milena tece: tramas delicadas, feitas para durar."
+      "Olá! Me chamo Milena e desde que me conheço por gente sou ligada às artes e à criatividade. Já pratiquei dança, toquei violão, desenho à mão livre, pinto aquarela e sempre gostei de peças de artesanais e únicas. Me formei em arquitetura pela UFBA, e desde 2025 comecei a me aventurar na área da arte com fios. Aqui incluo o macramê, o crochê e um pouquinho de tecelagem aplicada ao macramê. O nome da marca vem das aranhas Nephila, um gênero de aranhas-tecedeiras famosas por produzirem teias circulares gigantes com fios de coloração dourada. Sempre achei os insetos seres fascinantes e nada mais justo do que escolher um deles como fonte de inspiração para meu trabalho!"
     ],
     "photo": "img/milena.jpeg",
     "photoVersion": "1789944680232.0571"
